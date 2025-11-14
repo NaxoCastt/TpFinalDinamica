@@ -46,9 +46,33 @@ switch ($accion) {
         $respuesta = $obj->bajaProducto($datos['id']);
         break;
 
+    case 'editar':
+        $inputJSON = file_get_contents('php://input');
+        $datos = json_decode($inputJSON, true);
+        $respuesta = $obj->modificacionProducto($datos);
+        break;
+
+
     case 'buscar':
-        $datos = data_submitted();
-        $respuesta = $obj->buscarProducto($datos['idproducto']);
+        $inputJSON = file_get_contents('php://input');
+        $datos = json_decode($inputJSON, true);
+        $respuesta = $obj->buscarProducto($datos['id']);
+        if (is_array($respuesta) && count($respuesta) > 0) {
+            $salida = [];
+            foreach ($respuesta as $item) {
+                if (is_object($item) && method_exists($item, 'getIdproducto')) {
+                    $salida[] = [
+                        'idproducto'   => $item->getIdproducto(),
+                        'pronombre'    => $item->getPronombre(),
+                        'prodetalle'   => $item->getProdetalle(),
+                        'procantstock' => $item->getProcantstock(),
+                    ];
+                } else {
+                    $salida[] = $item;
+                }
+            }
+            $respuesta = $salida;
+        }
         break;
 
     default:

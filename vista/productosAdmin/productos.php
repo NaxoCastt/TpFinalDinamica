@@ -87,6 +87,40 @@
       </div>
     </div>
 
+    <!-- Modal para editar registros -->
+
+    <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Editar producto</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="needs-validation" id="formEdicion">
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Nombre del producto</label>
+                <input type="text" id="nombreEdicion" class="form-control" required maxlength="100"
+                  pattern="^[\p{L}\d\s.,\-!&]{1,100}$">
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">Detalle</label>
+                <textarea class="form-control" id="detalleEdicion"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">Stock</label>
+                <input type="number" class="form-control" id="stockEdicion" required max="9999"
+                  step="1" min="1"></input>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" id="btnEditarConfirmacion">Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

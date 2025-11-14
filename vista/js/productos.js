@@ -21,10 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <td style="vertical-align: middle">${element.prodetalle}</td>
         <td style="vertical-align: middle">${element.procantstock}</td>
         <td class="d-flex justify-content-center gap-5">
-            <button class="btn btn-warning btn-sm px-3 py-2" title="Editar" value="${element.idproducto}">
+            <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-id="${element.idproducto}">
                 <i class="bi bi-pen"></i>
             </button> 
-            <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-id="${element.idproducto}" title="Borrar" value="${element.idproducto}">
+            <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-id="${element.idproducto}" title="Borrar">
                 <i class="bi bi-trash"></i>
             </button>
         </td>
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "Se agregó correctamente al catálogo",
             "success"
           );
-          modal.hide();
+          $modal.hide();
           document.activeElement?.blur();
 
           $form.reset();
@@ -141,6 +141,101 @@ document.addEventListener("DOMContentLoaded", () => {
             "error"
           );
         }
+      })
+      .catch((error) => {
+        console.error("Error AJAX:", error);
+        Swal.fire("Error", "Hubo un problema de conexión", "error");
+      });
+  });
+
+  //Seccion para editar registro
+
+  let $botonEditar = null;
+  let $idEdicion = null;
+
+  const $modalEditar = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("modalEditar")
+  );
+  document.addEventListener("click", (e) => {
+    const $botonEditar = e.target.closest(".btnEditar");
+    if (!$botonEditar) return;
+
+    $idEdicion = $botonEditar.dataset.id;
+    fetch("../../ajax/productoAjax.php?accion=buscar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: $idEdicion,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          let $nombreEdicion = document.getElementById("nombreEdicion");
+          let $detalleEdicion = document.getElementById("detalleEdicion");
+          let $stockEdicion = document.getElementById("stockEdicion");
+
+          $nombreEdicion.value = data[0].pronombre;
+          $detalleEdicion.value = data[0].prodetalle;
+          $stockEdicion.value = data[0].procantstock;
+        }
+        $modalEditar.show();
+
+
+
+
+
+//seccion de confirmacion de la edicion
+
+
+        let $formEdicion = document.getElementById("formEdicion");
+        const $botonConfirmacionEditar = document.getElementById("btnEditarConfirmacion");
+        $botonConfirmacionEditar.addEventListener("click", () => {
+          // Activar validación visual
+          if (!$formEdicion.checkValidity()) {
+            $formEdicion.classList.add("was-validated");
+            return;
+          }
+
+          $nombreEdicion = document.getElementById("nombreEdicion");
+          $detalleEdicion = document.getElementById("detalleEdicion");
+          $stockEdicion = document.getElementById("stockEdicion");
+
+          fetch("../../ajax/productoAjax.php?accion=editar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              idproducto: $idEdicion,
+              pronombre: $nombreEdicion.value.trim(),
+              prodetalle: $detalleEdicion.value.trim(),
+              procantstock: $stockEdicion.value.trim(),
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data === true || data === "true") {
+                Swal.fire(
+                  "¡Producto Editado!",
+                  "Se modificó correctamente al catálogo",
+                  "success"
+                );
+                $modalEditar.hide();
+                document.activeElement?.blur();
+
+                actualizarTabla();
+              } else {
+                Swal.fire(
+                  "Error",
+                  data.message || "No se pudo editar el producto",
+                  "error"
+                );
+              }
+            })
+            .catch((error) => {
+              console.error("Error AJAX:", error);
+              Swal.fire("Error", "Hubo un problema de conexión", "error");
+            });
+        });
       })
       .catch((error) => {
         console.error("Error AJAX:", error);
