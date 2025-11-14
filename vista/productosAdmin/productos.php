@@ -30,31 +30,57 @@
 
         </tbody>
       </table>
+      <!-- Modal para agregar producots -->
+      <button type="button" id="agregarProductoBtn" class="btn btn-light d-flex justify-content-center m-auto" data-bs-whatever="@mdo"><i class="bi bi-plus"> Agregar producto</i></button>
 
-      <button type="button" class="btn btn-light d-flex justify-content-center m-auto" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo"><i class="bi bi-plus"> Agregar producto</i></button>
-   
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar producto</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form>
+              <form class="needs-validation" id="form">
                 <div class="mb-3">
-                  <label for="recipient-name" class="col-form-label">Recipient:</label>
-                  <input type="text" class="form-control" id="recipient-name">
+                  <label for="recipient-name" class="col-form-label">Nombre del producto</label>
+                  <input type="text" id="nombre" class="form-control" required maxlength="100"
+                    pattern="^[\p{L}\d\s.,\-!&]{1,100}$">
                 </div>
                 <div class="mb-3">
-                  <label for="message-text" class="col-form-label">Message:</label>
-                  <textarea class="form-control" id="message-text"></textarea>
+                  <label for="message-text" class="col-form-label">Detalle</label>
+                  <textarea class="form-control" id="detalle"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Stock</label>
+                  <input type="number" class="form-control" id="stock" required max="9999"
+                    step="1" min="1"></input>
                 </div>
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Send message</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-primary" id="agregar">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- modal para borrar producto -->
+
+      <div class="modal" tabindex="-1" id="modalBorrar">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Esta seguro que quiere eliminar este producto?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary" id="botonBorrarConfirmacion">Si</button>
             </div>
           </div>
         </div>
@@ -63,8 +89,10 @@
 
 
   </div>
-  <script src="../js/productos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/productos.js"></script>
 </body>
 
 </html>

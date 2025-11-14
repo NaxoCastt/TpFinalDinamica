@@ -1,16 +1,20 @@
+
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 include_once '../configuracion.php';
 
-$datos = data_submitted();
-$accion = $datos['accion'];
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
+
+$accion = $_GET['accion'] ?? $_POST['accion'] ?? null;
+
 $obj = new abmProducto();
 $respuesta = null;
 switch ($accion) {
 
     case 'listar':
+        $datos = data_submitted();
         $respuesta = $obj->listarProductos();
         if (is_array($respuesta) && count($respuesta) > 0) {
             $salida = [];
@@ -31,14 +35,19 @@ switch ($accion) {
         break;
 
     case 'alta':
+        $inputJSON = file_get_contents('php://input');
+        $datos = json_decode($inputJSON, true);
         $respuesta = $obj->altaProducto($datos);
         break;
 
     case 'baja':
-        $respuesta = $obj->bajaProducto($datos['idproducto']);
+        $inputJSON = file_get_contents('php://input');
+        $datos = json_decode($inputJSON, true);
+        $respuesta = $obj->bajaProducto($datos['id']);
         break;
 
     case 'buscar':
+        $datos = data_submitted();
         $respuesta = $obj->buscarProducto($datos['idproducto']);
         break;
 
@@ -49,3 +58,5 @@ switch ($accion) {
 
 header('Content-Type: application/json');
 echo json_encode($respuesta);
+
+exit;
