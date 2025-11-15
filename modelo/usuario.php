@@ -1,5 +1,5 @@
 <?php
-include_once('conector/baseDeDatos.php');
+//include_once('conector/baseDeDatos.php');
 class Usuario
 {
 

@@ -1,3 +1,20 @@
+<?php
+include_once "../../configuracion.php";
+include_once "../../control/Session.php";
+$objSession = new Session();
+
+// Si no está logueado, no ve nada
+if (!$objSession->validar()) {
+    header('Location: ../login.php?error=Debe iniciar sesion para ver el catalogo');
+    exit;
+}
+
+?>
+<!DOCTYPE html>
+<div class="d-flex justify-content-end p-3">
+    <span class="me-3 align-self-center">Hola, <?php echo $_SESSION['usnombre']; ?></span>
+    <a href="../accion/cerrarSesion.php" class="btn btn-danger btn-sm">Salir</a>
+</div>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -17,11 +34,6 @@
             </h2>
 
             <div class="container py-4 " id="catalogoProductos"></div>
-
-
-
-
-
 
 
         </div>

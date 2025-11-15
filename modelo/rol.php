@@ -1,11 +1,8 @@
 <?php
 class Rol
 {
-
-
     private $idrol;
     private $rodescripcion;
-
     private static $mensajeoperacion;
 
     public function __construct()
@@ -14,6 +11,7 @@ class Rol
         $this->rodescripcion = "";
         self::$mensajeoperacion = "";
     }
+
     public function cargar($idrol, $rodescripcion)
     {
         $this->setIdrol($idrol);
@@ -28,7 +26,8 @@ class Rol
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 if ($row = $base->Registro()) {
-                    $this->cargar($row['idrol'], $row['roldescripcion']);
+                    // CORREGIDO: roldescripcion -> rodescripcion
+                    $this->cargar($row['idrol'], $row['rodescripcion']);
                     $resp = true;
                 }
             } else {
@@ -53,7 +52,8 @@ class Rol
             if ($base->Ejecutar($consulta)) {
                 while ($row = $base->Registro()) {
                     $obj = new Rol();
-                    $obj->cargar($row['idrol'], $row['roldescripcion']);
+                    // CORREGIDO: roldescripcion -> rodescripcion
+                    $obj->cargar($row['idrol'], $row['rodescripcion']);
                     array_push($arreglo, $obj);
                 }
             } else {
@@ -69,7 +69,8 @@ class Rol
     {
         $base = new BaseDatos();
         $resp = false;
-        $consulta = "INSERT INTO rol(roldescripcion) VALUES ('" . $this->getRodescripcion() . "')";
+        // CORREGIDO: roldescripcion -> rodescripcion
+        $consulta = "INSERT INTO rol(rodescripcion) VALUES ('" . $this->getRodescripcion() . "')";
         if ($base->Iniciar()) {
             if ($id = $base->Ejecutar($consulta)) {
                 $this->setIdrol($id);
@@ -87,7 +88,8 @@ class Rol
     {
         $resp = false;
         $base = new BaseDatos();
-        $consulta = "UPDATE rol SET roldescripcion='" . $this->getRodescripcion() . "' WHERE idrol=" . $this->getIdrol();
+        // CORREGIDO: roldescripcion -> rodescripcion
+        $consulta = "UPDATE rol SET rodescripcion='" . $this->getRodescripcion() . "' WHERE idrol=" . $this->getIdrol();
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 $resp = true;
@@ -116,10 +118,12 @@ class Rol
         }
         return $resp;
     }
+
     public function __toString()
     {
         return "Rol ID: " . $this->getIdrol() . " - Descripción: " . $this->getRodescripcion();
     }
+
     public function getIdrol()
     {
         return $this->idrol;
@@ -150,3 +154,4 @@ class Rol
         self::$mensajeoperacion = $mensajeoperacion;
     }
 }
+?>

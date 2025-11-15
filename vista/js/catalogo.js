@@ -18,9 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
       $dibujado += `
       <div class="col">
         <div class="card h-100 shadow-sm">
-          <img src="/tpfinaldinamica/util/imagenesProductos/${
-            element.idproducto
-          }.${element.extension}?v=${Date.now()}"
+          <img src="/tpfinaldinamica/util/imagenesProductos/${element.idproducto
+        }.${element.extension}?v=${Date.now()}"
                class="card-img-top"
                alt="Imagen del producto"
                style="height: 200px; object-fit: cover;"
@@ -28,14 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">${element.pronombre}</h5>
             <p class="card-text">${element.prodetalle}</p>
-            <p class="card-text text-muted"><small>Disponibles: ${
-              element.procantstock
-            }</small></p>
+            <p class="card-text text-muted"><small>Disponibles: ${element.procantstock
+        }</small></p>
             <div class="mt-auto d-flex justify-content-right">
               
-              <button class="btn btn-danger btn-sm btnCarritoAdd" data-id="${
-                element.idproducto
-              }" title="Borrar">
+              <button class="btn btn-danger btn-sm btnCarritoAdd" data-id="${element.idproducto
+        }" title="Borrar">
                 <i class="bi bi-cart-fill"></i>
               </button>
             </div>
