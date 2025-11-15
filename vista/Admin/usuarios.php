@@ -7,7 +7,7 @@ if (!$objSession->validar()) {
     header('Location: ../login.php?error=Debe iniciar sesion');
     exit;
 }
-if (!in_array('Administrador', $objSession->getRol())) {
+if (!in_array('Admin', $objSession->getRol())) {
     header('Location: ../Cliente/productos.php');
     exit;
 }

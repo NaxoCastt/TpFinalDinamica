@@ -9,7 +9,7 @@ if (!$objSession->validar()) {
 }
 
 // Si no es Admin, al catálogo de cliente (o a donde prefieras)
-if (!in_array('Administrador', $objSession->getRol())) {
+if (!in_array('Admin', $objSession->getRol())) {
   header('Location: ../Cliente/productos.php');
   exit;
 }
