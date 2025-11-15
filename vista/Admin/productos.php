@@ -20,6 +20,7 @@
         <thead class="table-secondary">
           <tr>
             <th>Id</th>
+            <th>Imagen</th>
             <th>Nombre</th>
             <th>Detalles</th>
             <th>Stock</th>
@@ -31,8 +32,10 @@
         </tbody>
       </table>
       <!-- Modal para agregar producots -->
-      <button type="button" id="agregarProductoBtn" class="btn btn-light d-flex justify-content-center m-auto" data-bs-whatever="@mdo"><i class="bi bi-plus"> Agregar producto</i></button>
-
+      <div class="d-flex">
+        <button type="button" id="agregarProductoBtn" class="btn btn-light d-flex justify-content-center m-auto" data-bs-whatever="@mdo"><i class="bi bi-plus"> Agregar producto</i></button>
+        <button type="button" id="verSinStock" class="btn btn-light d-flex justify-content-center m-auto" data-bs-whatever="@mdo"><i class="bi bi-plus"> Ver productos sin stock...En construccion</i></button>
+      </div>
       <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -41,21 +44,27 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form class="needs-validation" id="form">
+              <form class="needs-validation" id="form" enctype="multipart/form-data">
                 <div class="mb-3">
                   <label for="recipient-name" class="col-form-label">Nombre del producto</label>
-                  <input type="text" id="nombre" class="form-control" required maxlength="100"
+                  <input type="text" id="nombre" name="pronombre" class="form-control" required maxlength="100"
                     pattern="^[\p{L}\d\s.,\-!&]{1,100}$">
                 </div>
                 <div class="mb-3">
                   <label for="message-text" class="col-form-label">Detalle</label>
-                  <textarea class="form-control" id="detalle"></textarea>
+                  <textarea class="form-control" id="detalle" name="prodetalle"></textarea>
                 </div>
                 <div class="mb-3">
                   <label for="message-text" class="col-form-label">Stock</label>
-                  <input type="number" class="form-control" id="stock" required max="9999"
+                  <input type="number" class="form-control" id="stock" name="procantstock" required max="9999"
                     step="1" min="1"></input>
                 </div>
+                <div class="mb-3">
+                  <label for="imagen" class="col-form-label">Imagen del producto</label>
+                  <input type="file" id="imagen" name="imagen" class="form-control" accept=".jpg,.jpeg,.png,.webp" required>
+                  <div class="invalid-feedback">Solo se permiten imágenes JPG, PNG o WEBP.</div>
+                </div>
+
               </form>
             </div>
             <div class="modal-footer">
@@ -97,20 +106,26 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form class="needs-validation" id="formEdicion">
+            <form class="needs-validation" id="formEdicion" enctype="multipart/form-data">
               <div class="mb-3">
                 <label for="recipient-name" class="col-form-label">Nombre del producto</label>
-                <input type="text" id="nombreEdicion" class="form-control" required maxlength="100"
+                <input type="text" id="nombreEdicion" class="form-control" name="pronombre" required maxlength="100"
                   pattern="^[\p{L}\d\s.,\-!&]{1,100}$">
               </div>
               <div class="mb-3">
                 <label for="message-text" class="col-form-label">Detalle</label>
-                <textarea class="form-control" id="detalleEdicion"></textarea>
+                <textarea class="form-control" id="detalleEdicion" name="prodetalle"></textarea>
               </div>
               <div class="mb-3">
                 <label for="message-text" class="col-form-label">Stock</label>
-                <input type="number" class="form-control" id="stockEdicion" required max="9999"
+                <input type="number" class="form-control" id="stockEdicion" name="procantstock" required max="9999"
                   step="1" min="1"></input>
+              </div>
+              <div class="mb-3">
+                <label for="imagen" class="col-form-label">Imagen del producto</label>
+                <input type="file" id="imagenEdicion" name="imagenEdicion" class="form-control" accept=".jpg,.jpeg,.png,.webp" required>
+                <div class="invalid-feedback">Solo se permiten imágenes JPG, PNG o WEBP.</div>
+                <input type="hidden" id="idEdicion" name="idproducto">
               </div>
             </form>
           </div>

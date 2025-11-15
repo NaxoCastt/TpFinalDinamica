@@ -17,17 +17,28 @@ document.addEventListener("DOMContentLoaded", () => {
       $dibujado += `
         <tr>
         <td style="vertical-align: middle">${element.idproducto}</td>
+        <td style="vertical-align: middle">
+      <img src="/tpfinaldinamica/util/imagenesProductos/${element.idproducto}.${element.extension}"
+
+           alt="Imagen del producto"
+           style="max-width: 80px; max-height: 80px; object-fit: cover;"
+           onerror="this.src='/tpfinaldinamica/util/imagenesProductos/default.png';">
+    </td>
+
         <td style="vertical-align: middle">${element.pronombre}</td>
         <td style="vertical-align: middle">${element.prodetalle}</td>
         <td style="vertical-align: middle">${element.procantstock}</td>
-        <td class="d-flex justify-content-center gap-5">
-            <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-id="${element.idproducto}">
-                <i class="bi bi-pen"></i>
-            </button> 
-            <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-id="${element.idproducto}" title="Borrar">
-                <i class="bi bi-trash"></i>
-            </button>
-        </td>
+        <td style="vertical-align: middle">
+  <div class="d-flex justify-content-center gap-3">
+    <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-id="${element.idproducto}">
+      <i class="bi bi-pen"></i>
+    </button> 
+    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-id="${element.idproducto}" title="Borrar">
+      <i class="bi bi-trash"></i>
+    </button>
+  </div>
+</td>
+
         </tr>
         `;
     });
@@ -54,19 +65,17 @@ document.addEventListener("DOMContentLoaded", () => {
       $form.classList.add("was-validated");
       return;
     }
-
-    fetch("../../ajax/productoAjax.php?accion=alta", {
+    const formData = new FormData($form);
+    formData.append("id", $idEdicion);
+    formData.append("accion", "alta");
+    fetch("../../ajax/productoAjax.php?", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        pronombre: $nombre.value.trim(),
-        prodetalle: $detalle.value.trim(),
-        procantstock: $stock.value.trim(),
-      }),
+      body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data === true || data === "true") {
+        console.log(data);
+        if (data) {
           Swal.fire(
             "¡Producto creado!",
             "Se agregó correctamente al catálogo",
@@ -108,13 +117,16 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   document.addEventListener("click", (e) => {
     const $botonBorrar = e.target.closest(".btnBorrar");
-    if (!$botonBorrar) return;
+    if (!$botonBorrar) {
+      return;
+    }
     $idBorrar = $botonBorrar.dataset.id;
 
     $modalCerrar.show();
   });
   const $confirmacion = document.getElementById("botonBorrarConfirmacion");
   $confirmacion.addEventListener("click", () => {
+    console.log($idBorrar);
     fetch("../../ajax/productoAjax.php?accion=baja", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -124,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data === true || $data === "true") {
+        if (data === true || data === "true") {
           Swal.fire(
             "¡Producto eliminado!",
             "El producto se eliminó satisfactoriamente",
@@ -152,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let $botonEditar = null;
   let $idEdicion = null;
-
+  let $formEdicion = document.getElementById("formEdicion");
   const $modalEditar = bootstrap.Modal.getOrCreateInstance(
     document.getElementById("modalEditar")
   );
@@ -161,12 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!$botonEditar) return;
 
     $idEdicion = $botonEditar.dataset.id;
-    fetch("../../ajax/productoAjax.php?accion=buscar", {
+    const formData = new FormData($formEdicion);
+    formData.append("id", $idEdicion);
+    formData.append("accion", "buscar");
+    fetch("../../ajax/productoAjax.php", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: $idEdicion,
-      }),
+      body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
@@ -174,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
           let $nombreEdicion = document.getElementById("nombreEdicion");
           let $detalleEdicion = document.getElementById("detalleEdicion");
           let $stockEdicion = document.getElementById("stockEdicion");
+          document.getElementById("imagenEdicion").value = "";
 
           $nombreEdicion.value = data[0].pronombre;
           $detalleEdicion.value = data[0].prodetalle;
@@ -181,39 +194,41 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         $modalEditar.show();
 
+        //seccion de confirmacion de la edicion
 
-
-
-
-//seccion de confirmacion de la edicion
-
-
-        let $formEdicion = document.getElementById("formEdicion");
-        const $botonConfirmacionEditar = document.getElementById("btnEditarConfirmacion");
+        const $botonConfirmacionEditar = document.getElementById(
+          "btnEditarConfirmacion"
+        );
         $botonConfirmacionEditar.addEventListener("click", () => {
           // Activar validación visual
           if (!$formEdicion.checkValidity()) {
             $formEdicion.classList.add("was-validated");
             return;
           }
-
+          document.getElementById("idEdicion").value = $idEdicion;
           $nombreEdicion = document.getElementById("nombreEdicion");
           $detalleEdicion = document.getElementById("detalleEdicion");
           $stockEdicion = document.getElementById("stockEdicion");
 
-          fetch("../../ajax/productoAjax.php?accion=editar", {
+          const formData = new FormData($formEdicion);
+          formData.append("id", $idEdicion);
+          formData.append("accion", "editar");
+          formData.append("pronombre", $nombreEdicion.value);
+          formData.append("prodetalle", $detalleEdicion.value.trim() || "");
+          const $imagenEdicion = document.getElementById("imagenEdicion");
+          if ($imagenEdicion.files.length > 0) {
+            formData.append("imagen", $imagenEdicion.files[0]);
+          }
+
+          formData.append("procantstock", $stockEdicion.value);
+
+          fetch("../../ajax/productoAjax.php", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              idproducto: $idEdicion,
-              pronombre: $nombreEdicion.value.trim(),
-              prodetalle: $detalleEdicion.value.trim(),
-              procantstock: $stockEdicion.value.trim(),
-            }),
+            body: formData,
           })
             .then((response) => response.json())
             .then((data) => {
-              if (data === true || data === "true") {
+              if (data) {
                 Swal.fire(
                   "¡Producto Editado!",
                   "Se modificó correctamente al catálogo",
@@ -233,7 +248,11 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch((error) => {
               console.error("Error AJAX:", error);
-              Swal.fire("Error", "Hubo un problema de conexión", "error");
+              Swal.fire(
+                "Error",
+                "Hubo un problema de conexión al editar",
+                "error"
+              );
             });
         });
       })
