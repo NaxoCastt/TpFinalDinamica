@@ -23,6 +23,14 @@ class abmProducto
         $objProducto->setProcantstock(-1);
         return $objProducto->modificar();
     }
+   
+    //borrado fisico
+    public function bajaProductoFisico($idproducto)
+    {
+        $objProducto = new Producto();
+        $objProducto->buscar($idproducto);
+        return $objProducto->eliminar();
+    }
 
     public function modificacionProducto($datos)
     {
@@ -45,6 +53,12 @@ class abmProducto
     }
 
     public function listarProductos($where = "procantstock >= 0")
+    {
+        $objProducto = new Producto();
+        $colProductos = $objProducto->listar($where);
+        return $colProductos;
+    }
+    public function listarProductosSinStock($where = "procantstock = -1")
     {
         $objProducto = new Producto();
         $colProductos = $objProducto->listar($where);

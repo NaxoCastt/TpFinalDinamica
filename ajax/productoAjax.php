@@ -48,6 +48,41 @@ switch ($accion) {
         $respuesta = $salida;
         break;
 
+    case 'listarSinStock':
+        $datos = data_submitted();
+        $respuesta = $obj->listarProductosSinStock();
+
+        $extensiones = ['jpg', 'png', 'webp', 'jpeg'];
+        $carpeta = '../util/imagenesProductos/';
+
+        foreach ($respuesta as $item) {
+            $imagen = 'default.png';
+            $extension = 'png';
+
+            if (is_object($item) && method_exists($item, 'getIdproducto')) {
+                foreach ($extensiones as $ext) {
+                    $ruta = $carpeta . $item->getIdproducto() . '.' . $ext;
+                    if (file_exists($ruta)) {
+                        $imagen = $item->getIdproducto() . '.' . $ext;
+                        $extension = $ext;
+                        break;
+                    }
+                }
+
+                $salida[] = [
+                    'idproducto'   => $item->getIdproducto(),
+                    'pronombre'    => $item->getPronombre(),
+                    'prodetalle'   => $item->getProdetalle(),
+                    'procantstock' => $item->getProcantstock(),
+                    'imagen'       => $imagen,
+                    'extension'    => $extension
+                ];
+            }
+        }
+
+        $respuesta = $salida;
+        break;
+
 
     case 'alta':
         $datos = data_submitted();
@@ -73,6 +108,13 @@ switch ($accion) {
         $inputJSON = file_get_contents('php://input');
         $datos = json_decode($inputJSON, true);
         $respuesta = $obj->bajaProducto($datos['id']);
+    
+        break;
+
+    case 'bajaDefinitiva':
+        $inputJSON = file_get_contents('php://input');
+        $datos = json_decode($inputJSON, true);
+        $respuesta = $obj->bajaProductoFisico($datos['id']);
         if ($respuesta === true && isset($datos['id'])) {
             $id = $datos['id'];
             $carpeta = '../util/imagenesProductos/';
@@ -80,7 +122,7 @@ switch ($accion) {
             foreach ($extensiones as $ext) {
                 $archivo = $carpeta . $id . '.' . $ext;
                 if (file_exists($archivo)) {
-                    unlink($archivo); 
+                    unlink($archivo);
                 }
             }
         }

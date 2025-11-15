@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
     <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-id="${element.idproducto}">
       <i class="bi bi-pen"></i>
     </button> 
-    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-id="${element.idproducto}" title="Borrar">
+    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-id="${element.idproducto}" data-stock="${element.procantstock}"
+ title="Borrar">
       <i class="bi bi-trash"></i>
     </button>
   </div>
@@ -112,14 +113,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //Seccion parte borrar registro
   let $botonBorrar = null;
+  let $stockBorrar = null;
+
   const $modalCerrar = bootstrap.Modal.getOrCreateInstance(
     document.getElementById("modalBorrar")
   );
   document.addEventListener("click", (e) => {
-    const $botonBorrar = e.target.closest(".btnBorrar");
+    $botonBorrar = e.target.closest(".btnBorrar");
+    
     if (!$botonBorrar) {
       return;
     }
+    $stockBorrar = $botonBorrar.dataset.stock;
     $idBorrar = $botonBorrar.dataset.id;
 
     $modalCerrar.show();
@@ -127,7 +132,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const $confirmacion = document.getElementById("botonBorrarConfirmacion");
   $confirmacion.addEventListener("click", () => {
     console.log($idBorrar);
-    fetch("../../ajax/productoAjax.php?accion=baja", {
+
+    if ($stockBorrar > 0) {
+      $url = "../../ajax/productoAjax.php?accion=baja";
+    } else {
+      $url = "../../ajax/productoAjax.php?accion=bajaDefinitiva";
+    }
+
+    fetch($url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -144,12 +156,15 @@ document.addEventListener("DOMContentLoaded", () => {
           );
           $modalCerrar.hide();
           document.activeElement?.blur();
-
-          actualizarTabla();
+          if ($stockBorrar > 0) {
+            actualizarTabla();
+          } else {
+            VerTablaSinStock();
+          }
         } else {
           Swal.fire(
             "Error",
-            data.message || "No se pudo crear el producto",
+            data.message || "No se pudo borrar el producto",
             "error"
           );
         }
@@ -236,8 +251,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
                 $modalEditar.hide();
                 document.activeElement?.blur();
+                if($stockEdicion.value > 0){
 
-                actualizarTabla();
+                  actualizarTabla();
+                }
+                else{
+                  VerTablaSinStock()
+                }
               } else {
                 Swal.fire(
                   "Error",
@@ -262,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
-  function actualizarTabla() {
+  function actualizarTabla($valor) {
     fetch("../../ajax/productoAjax.php?accion=listar")
       .then((response) => response.json())
       .then(($productos) => {
@@ -270,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
           $tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay productos para mostrar</td></tr>`;
           return;
         }
+
         $tabla.innerHTML = dibujarTabla($productos);
       })
       .catch((error) => {
@@ -277,4 +298,27 @@ document.addEventListener("DOMContentLoaded", () => {
         $tabla.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Error al cargar productos</td></tr>`;
       });
   }
+
+  //Seccion para sin stock
+
+  let $botonVerSinStock = document.getElementById("verSinStock");
+  function VerTablaSinStock() {
+    let $tabla = document.getElementById("tablaProductos");
+    console.log("boton pulsado");
+    fetch("../../ajax/productoAjax.php?accion=listarSinStock")
+      .then((response) => response.json())
+      .then(($productos) => {
+        if ($productos.length === 0) {
+          $tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay productos para mostrar</td></tr>`;
+          return;
+        }
+        $tabla.innerHTML = dibujarTabla($productos);
+      });
+  }
+  $botonVerSinStock.addEventListener("click", () => {
+    VerTablaSinStock();
+  });
+
+
+
 });

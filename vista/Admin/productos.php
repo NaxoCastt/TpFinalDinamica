@@ -119,11 +119,11 @@
               <div class="mb-3">
                 <label for="message-text" class="col-form-label">Stock</label>
                 <input type="number" class="form-control" id="stockEdicion" name="procantstock" required max="9999"
-                  step="1" min="1"></input>
+                  step="1" min="-1"></input>
               </div>
               <div class="mb-3">
                 <label for="imagen" class="col-form-label">Imagen del producto</label>
-                <input type="file" id="imagenEdicion" name="imagenEdicion" class="form-control" accept=".jpg,.jpeg,.png,.webp" required>
+                <input type="file" id="imagenEdicion" name="imagenEdicion" class="form-control" accept=".jpg,.jpeg,.png,.webp">
                 <div class="invalid-feedback">Solo se permiten imágenes JPG, PNG o WEBP.</div>
                 <input type="hidden" id="idEdicion" name="idproducto">
               </div>
