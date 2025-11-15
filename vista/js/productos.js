@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
         <td style="vertical-align: middle">${element.idproducto}</td>
         <td style="vertical-align: middle">
-      <img src="/tpfinaldinamica/util/imagenesProductos/${element.idproducto}.${element.extension}"
+      <img src="/tpfinaldinamica/util/imagenesProductos/${element.idproducto}.${element.extension}?v=${new Date().getTime()}"
 
            alt="Imagen del producto"
            style="max-width: 80px; max-height: 80px; object-fit: cover;"

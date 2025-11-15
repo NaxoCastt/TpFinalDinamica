@@ -1,3 +1,22 @@
+<?php
+include_once "../../configuracion.php";
+$objSession = new Session();
+
+// Si no está logueado, al login
+if (!$objSession->validar()) {
+  header('Location: ../login.php?error=Debe iniciar sesion');
+  exit;
+}
+
+// Si no es Admin, al catálogo de cliente (o a donde prefieras)
+if (!in_array('Administrador', $objSession->getRol())) {
+  header('Location: ../Cliente/productos.php');
+  exit;
+}
+?>
+
+<!DOCTYPE html>
+<a href="../accion/cerrarSesion.php" class="btn btn-danger float-end m-3">Cerrar Sesión</a>
 <!DOCTYPE html>
 <html lang="es">
 
