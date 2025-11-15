@@ -39,11 +39,4 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-function php_alert($data) {
-    echo '<script>';
-    // json_encode convierte el array/objeto PHP a formato JS seguro
-    echo 'alert(' . json_encode($data) . ');';
-    echo '</script>';
-}
-
 ?>
