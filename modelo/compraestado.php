@@ -2,7 +2,6 @@
 
 class Compraestado
 {
-
     private $idcompraestado;
     private $idcompra;
     private $idcompraestadotipo;
@@ -14,9 +13,9 @@ class Compraestado
     {
         $this->idcompraestado = "";
         $this->idcompra = "";
-        $this->idcompraestadotipo ="";
+        $this->idcompraestadotipo = "";
         $this->cefechaini = "";
-        $this->cefechafin = "";
+        $this->cefechafin = null; // Importante: inicializar en null
         self::$mensajeOperacion = "";
     }
 
@@ -28,6 +27,7 @@ class Compraestado
         $this->setCefechaini($cefechaini);
         $this->setCefechafin($cefechafin);
     }
+
     public function buscar($idcompraestado)
     {
         $base = new BaseDatos();
@@ -47,15 +47,43 @@ class Compraestado
         }
         return $resp;
     }
-    
+
     public function insertar()
     {
         $base = new BaseDatos();
         $resp = false;
-        $consulta = "INSERT INTO compraestado(idcompra, idcompraestadotipo, cefechaini, cefechafin) VALUES (" . $this->getIdcompra() . "," . $this->getIdcompraestadotipo() . ",'" . $this->getCefechaini() . "','" . $this->getCefechafin() . "')";
+        
+        $fechaFin = $this->getCefechafin();
+        $valorFechaFin = ($fechaFin == null || $fechaFin == 'null') ? "NULL" : "'" . $fechaFin . "'";
+
+        $consulta = "INSERT INTO compraestado(idcompra, idcompraestadotipo, cefechaini, cefechafin) 
+                     VALUES (" . $this->getIdcompra() . "," . $this->getIdcompraestadotipo() . ",'" . $this->getCefechaini() . "'," . $valorFechaFin . ")";
+        
         if ($base->Iniciar()) {
             if ($id = $base->Ejecutar($consulta)) {
                 $this->setIdcompraestado($id);
+                $resp = true;
+            } else {
+                self::$mensajeOperacion = $base->getError();
+            }
+        } else {
+            self::$mensajeOperacion = $base->getError();
+        }
+        return $resp;
+    }
+
+    public function modificar()
+    {
+        $resp = false;
+        $base = new BaseDatos();
+        
+        $fechaFin = $this->getCefechafin();
+        $valorFechaFin = ($fechaFin == null || $fechaFin == 'null') ? "NULL" : "'" . $fechaFin . "'";
+
+        $consulta = "UPDATE compraestado SET idcompra=" . $this->getIdcompra() . ",idcompraestadotipo=" . $this->getIdcompraestadotipo() . ",cefechaini='" . $this->getCefechaini() . "',cefechafin=" . $valorFechaFin . " WHERE idcompraestado=" . $this->getIdcompraestado();
+        
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($consulta)) {
                 $resp = true;
             } else {
                 self::$mensajeOperacion = $base->getError();
@@ -91,23 +119,6 @@ class Compraestado
         return $arreglo;
     }
 
-    public function modificar()
-    {
-        $resp = false;
-        $base = new BaseDatos();
-        $consulta = "UPDATE compraestado SET idcompra=" . $this->getIdcompra() . ",idcompraestadotipo=" . $this->getIdcompraestadotipo() . ",cefechaini='" . $this->getCefechaini() . "',cefechafin='" . $this->getCefechafin() . "' WHERE idcompraestado=" . $this->getIdcompraestado();
-        if ($base->Iniciar()) {
-            if ($base->Ejecutar($consulta)) {
-                $resp = true;
-            } else {
-                self::$mensajeOperacion = $base->getError();
-            }
-        } else {
-            self::$mensajeOperacion = $base->getError();
-        }
-        return $resp;
-    }   
-
     public function eliminar()
     {
         $resp = false;
@@ -127,32 +138,24 @@ class Compraestado
 
     public function __toString()
     {
-        return "Compraestado [idcompraestado=" . $this->getIdcompraestado() . ", idcompra=" . $this->getIdcompra() . ", idcompraestadotipo=" . $this->getIdcompraestadotipo() . ", cefechaini=" . $this->getCefechaini() . ", cefechafin=" . $this->getCefechafin() . "]";
+        return "Compraestado [id=" . $this->getIdcompraestado() . "]";
     }
 
+    // Getters y Setters
     public function getIdcompraestado() {return $this->idcompraestado;}
+    public function getIdcompra() {return $this->idcompra;}
+    public function getIdcompraestadotipo() {return $this->idcompraestadotipo;}
+    public function getCefechaini() {return $this->cefechaini;}
+    public function getCefechafin() {return $this->cefechafin;}
+    public static function getMensajeOperacion() {return self::$mensajeOperacion;}
 
-	public function getIdcompra() {return $this->idcompra;}
-
-	public function getIdcompraestadotipo() {return $this->idcompraestadotipo;}
-
-	public function getCefechaini() {return $this->cefechaini;}
-
-	public function getCefechafin() {return $this->cefechafin;}
-
-	public static function getMensajeOperacion() {return self::$mensajeOperacion;}
-
-    public function setIdcompraestado( $idcompraestado): void {$this->idcompraestado = $idcompraestado;}
-
-	public function setIdcompra( $idcompra): void {$this->idcompra = $idcompra;}
-
-	public function setIdcompraestadotipo( $idcompraestadotipo): void {$this->idcompraestadotipo = $idcompraestadotipo;}
-
-	public function setCefechaini( $cefechaini): void {$this->cefechaini = $cefechaini;}
-
-	public function setCefechafin( $cefechafin): void {$this->cefechafin = $cefechafin;}
-
-	public static function setMensajeOperacion($mensajeOperacion){self::$mensajeOperacion = $mensajeOperacion;}
-
+    public function setIdcompraestado($idcompraestado): void {$this->idcompraestado = $idcompraestado;}
+    public function setIdcompra($idcompra): void {$this->idcompra = $idcompra;}
+    public function setIdcompraestadotipo($idcompraestadotipo): void {$this->idcompraestadotipo = $idcompraestadotipo;}
+    public function setCefechaini($cefechaini): void {$this->cefechaini = $cefechaini;}
+    public function setCefechafin($cefechafin): void {$this->cefechafin = $cefechafin;}
+    public static function setMensajeOperacion($mensajeOperacion){self::$mensajeOperacion = $mensajeOperacion;}
+}
+?>
 	
 }
