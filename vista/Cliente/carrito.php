@@ -15,6 +15,7 @@ if (!$objSession->validar()) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="bg-light">
+    <?php include_once '../../estructura/header.php' ?>
 
     <nav class="navbar navbar-light bg-white shadow-sm mb-4">
         <div class="container">
@@ -58,5 +59,7 @@ if (!$objSession->validar()) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/carrito.js"></script>
+
+    <?php include_once '../../estructura/footer.php' ?>
 </body>
 </html>

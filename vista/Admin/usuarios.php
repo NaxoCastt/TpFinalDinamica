@@ -27,6 +27,7 @@ $rolesPosibles = $abmRol->buscar(null);
 </head>
 
 <body class="bg-light">
+    <?php include_once '../../estructura/header.php' ?>
     <a href="../accion/cerrarSesion.php" class="btn btn-danger float-end m-3">Cerrar Sesión</a>
 
     <div class="container py-5">
@@ -128,6 +129,7 @@ $rolesPosibles = $abmRol->buscar(null);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="../js/usuarios.js"></script>
+    <?php include_once '../../estructura/footer.php' ?>
 
 </body>
 </html>

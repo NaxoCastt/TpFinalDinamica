@@ -29,6 +29,7 @@ if (!in_array('Admin', $objSession->getRol())) {
 
 <body class="bg-light">
 
+  <?php include_once '../../estructura/header.php' ?>
   <div class="container py-5">
     <div class="p-4 rounded-4 shadow-lg" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc);">
       <h2 class="text-center text-white mb-4">
@@ -161,6 +162,7 @@ if (!in_array('Admin', $objSession->getRol())) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../js/productos.js"></script>
+  <?php include_once '../../estructura/footer.php' ?>
 </body>
 
 </html>

@@ -10,11 +10,7 @@ if (!$objSession->validar()) {
 }
 
 ?>
-<!DOCTYPE html>
-<div class="d-flex justify-content-end p-3">
-    <span class="me-3 align-self-center">Hola, <?php echo $_SESSION['usnombre']; ?></span>
-    <a href="../accion/cerrarSesion.php" class="btn btn-danger btn-sm">Salir</a>
-</div>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -26,7 +22,7 @@ if (!$objSession->validar()) {
 </head>
 
 <body class="bg-light">
-
+    <?php include_once '../../estructura/header.php' ?>
     <div class="container py-5">
         <div class="p-4 rounded-4 shadow-lg d-flex justify-content-center flex-column align-items-center" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc);">
             <h2 class="text-center text-white mb-4">
@@ -42,6 +38,8 @@ if (!$objSession->validar()) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/catalogo.js"></script>
+
+    <?php include_once '../../estructura/footer.php' ?>
 </body>
 
 </html>
