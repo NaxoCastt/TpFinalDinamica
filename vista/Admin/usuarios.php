@@ -28,7 +28,6 @@ $rolesPosibles = $abmRol->buscar(null);
 
 <body class="bg-light">
     <?php include_once '../../estructura/header.php' ?>
-    <a href="../accion/cerrarSesion.php" class="btn btn-danger float-end m-3">Cerrar Sesión</a>
 
     <div class="container py-5">
         <div class="p-4 rounded-4 shadow-lg" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc);">

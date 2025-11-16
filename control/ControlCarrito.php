@@ -176,4 +176,71 @@ class ControlCarrito
             return ['exito' => false, 'msg' => 'El producto no está en el carrito.'];
         }
     }
+
+    /**
+     * Finaliza la compra: Valida stock, descuenta stock y asigna estado "iniciada"
+     */
+    public function finalizarCompra($idUsuario)
+    {
+        $objCompra = $this->buscarCarritoActivo($idUsuario);
+        
+        if ($objCompra == null) {
+            return ['exito' => false, 'msg' => 'No hay carrito activo para finalizar.'];
+        }
+
+        $abmItem = new ABMCompraItem();
+        $abmProd = new abmProducto();
+        $abmEstado = new ABMCompraEstado();
+
+        $items = $abmItem->buscar(['idcompra' => $objCompra->getIdcompra()]);
+
+        if (count($items) == 0) {
+            return ['exito' => false, 'msg' => 'El carrito está vacío.'];
+        }
+
+        //Validar Stock de todos los items antes de proceder
+        foreach ($items as $item) {
+            $prodList = $abmProd->buscarProducto($item->getIdproducto());
+            if (count($prodList) > 0) {
+                $producto = $prodList[0];
+                if ($producto->getProcantstock() < $item->getCicantidad()) {
+                    return [
+                        'exito' => false, 
+                        'msg' => "Stock insuficiente para el producto: " . $producto->getPronombre()
+                    ];
+                }
+            } else {
+                return ['exito' => false, 'msg' => "Un producto ya no existe."];
+            }
+        }
+
+        // Descontar Stock y Cambiar Estado
+        foreach ($items as $item) {
+            $prodList = $abmProd->buscarProducto($item->getIdproducto());
+            $producto = $prodList[0];
+            
+            $nuevoStock = $producto->getProcantstock() - $item->getCicantidad();
+            
+            // Usamos el método modificacionProducto del ABM, pasando los datos necesarios
+            $datosProd = [
+                'idproducto' => $producto->getIdproducto(),
+                'pronombre' => $producto->getPronombre(),
+                'prodetalle' => $producto->getProdetalle(),
+                'procantstock' => $nuevoStock
+            ];
+            $abmProd->modificacionProducto($datosProd);
+        }
+
+        // Crear el primer estado (idcompraestadotipo = 1 -> Iniciada)
+        $paramEstado = [
+            'idcompra' => $objCompra->getIdcompra(),
+            'idcompraestadotipo' => 1 // Iniciada
+        ];
+        
+        if ($abmEstado->alta($paramEstado)) {
+            return ['exito' => true, 'msg' => 'Compra finalizada con éxito.'];
+        } else {
+            return ['exito' => false, 'msg' => 'Error al registrar el estado de la compra.'];
+        }
+    }
 }

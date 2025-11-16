@@ -1,13 +1,12 @@
 <?php
 class AbmCompraEstado {
+    
     public function alta($param){
         $resp = false;
         $obj = new CompraEstado();
         
-        // CORRECCIÓN: Seteamos IDs
         $obj->setIdcompra($param['idcompra']);
         $obj->setIdcompraestadotipo($param['idcompraestadotipo']);
-        
         $obj->setCefechaini(date("Y-m-d H:i:s"));
         $obj->setCefechafin(null);
         
@@ -17,15 +16,33 @@ class AbmCompraEstado {
         return $resp;
     }
 
+    /**
+     * Modifica el estado existente.
+     * Espera un array con: idcompraestado, idcompra, idcompraestadotipo, cefechaini, cefechafin
+     */
+    public function modificacion($param){
+        $resp = false;
+        if (isset($param['idcompraestado'])){
+            $obj = new CompraEstado();
+            $obj->cargar(
+                $param['idcompraestado'],
+                $param['idcompra'],
+                $param['idcompraestadotipo'],
+                $param['cefechaini'],
+                $param['cefechafin']
+            );
+            if($obj->modificar()){
+                $resp = true;
+            }
+        }
+        return $resp;
+    }
+
     public function buscar($param){
         $where = " true ";
         if ($param<>NULL){
             if (isset($param['idcompra'])) $where.=" and idcompra = ".$param['idcompra'];
-            if (isset($param['cefechafin'])) {
-                if($param['cefechafin'] == 'null') $where.=" and cefechafin IS NULL";
-            }
-            // Agregamos filtro por tipo si hace falta
-            if (isset($param['idcompraestadotipo'])) $where.=" and idcompraestadotipo = ".$param['idcompraestadotipo'];
+            if (isset($param['idcompraestado'])) $where.=" and idcompraestado = ".$param['idcompraestado'];
         }
         $obj = new CompraEstado();
         $arreglo = $obj->listar($where);

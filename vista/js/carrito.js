@@ -10,12 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     $tablaCarrito.innerHTML = `<tr><td colspan="6" class="text-center">Tu carrito está vacío</td></tr>`;
                     return;
                 }
-                
+
                 let html = "";
                 items.forEach((item) => {
-                    // Calculamos subtotal visual (opcional)
-                    // let subtotal = item.precio * item.cantidad; 
-                    
+
+
                     html += `
                     <tr>
                         <td class="align-middle">
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (nuevaCantidad > maxStock) {
                 Swal.fire("Stock insuficiente", `Solo hay ${maxStock} disponibles`, "warning");
                 input.value = maxStock; // Ajustamos al máximo disponible
-                // Aún así mandamos la petición para actualizar al máximo
             }
 
             actualizarCantidad(idProducto, input.value, input);
@@ -88,32 +86,32 @@ document.addEventListener("DOMContentLoaded", () => {
             method: "POST",
             body: formData
         })
-        .then(r => r.json())
-        .then(data => {
-            if(data.exito) {
-                
-                inputElement.dataset.oldValue = cantidad;
-                
-              
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true
-                });
-                Toast.fire({ icon: 'success', title: 'Cantidad actualizada' });
-                
-            } else {
-                Swal.fire("Error", data.msg, "error");
-                
+            .then(r => r.json())
+            .then(data => {
+                if (data.exito) {
+
+                    inputElement.dataset.oldValue = cantidad;
+
+
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true
+                    });
+                    Toast.fire({ icon: 'success', title: 'Cantidad actualizada' });
+
+                } else {
+                    Swal.fire("Error", data.msg, "error");
+
+                    inputElement.value = inputElement.dataset.oldValue;
+                }
+            })
+            .catch(err => {
+                console.error(err);
                 inputElement.value = inputElement.dataset.oldValue;
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            inputElement.value = inputElement.dataset.oldValue;
-        });
+            });
     }
 
     // Evento para eliminar item
@@ -143,22 +141,66 @@ document.addEventListener("DOMContentLoaded", () => {
             method: "POST",
             body: formData
         })
-        .then(r => r.json())
-        .then(data => {
-            if(data.exito) {
-                cargarCarrito(); // Recargar tabla
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Eliminado',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-            } else {
-                Swal.fire("Error", data.msg, "error");
-            }
-        });
+            .then(r => r.json())
+            .then(data => {
+                if (data.exito) {
+                    cargarCarrito(); // Recargar tabla
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Eliminado',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                } else {
+                    Swal.fire("Error", data.msg, "error");
+                }
+            });
     }
 
     // Cargar al inicio
     cargarCarrito();
+
+    const $btnFinalizar = document.querySelector(".card-footer .btn-success");
+
+    // Habilitar botón si no está vacío 
+    if ($btnFinalizar) {
+        $btnFinalizar.disabled = false;
+        $btnFinalizar.addEventListener("click", () => {
+            Swal.fire({
+                title: "¿Finalizar Compra?",
+                text: "Se procesará tu pedido y se descontará el stock.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Sí, comprar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    finalizarCompra();
+                }
+            });
+        });
+    }
+
+    function finalizarCompra() {
+        const formData = new FormData();
+        formData.append("accion", "finalizarCompra");
+
+        fetch("../../ajax/carritoAjax.php", {
+            method: "POST",
+            body: formData
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.exito) {
+                    Swal.fire("¡Compra Exitosa! Se te enviará por mail los estados de la compra", data.msg, "success")
+                        .then(() => {
+                            // Recargar para mostrar carrito vacío y actualizar cabecera si fuera necesario
+                            window.location.reload();
+                        });
+                } else {
+                    Swal.fire("Error", data.msg, "error");
+                }
+            })
+            .catch(err => console.error(err));
+    }
 });

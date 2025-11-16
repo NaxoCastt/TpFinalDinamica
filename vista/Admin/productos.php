@@ -16,8 +16,6 @@ if (!in_array('Admin', $objSession->getRol())) {
 ?>
 
 <!DOCTYPE html>
-<a href="../accion/cerrarSesion.php" class="btn btn-danger float-end m-3">Cerrar Sesión</a>
-<!DOCTYPE html>
 <html lang="es">
 
 <head>

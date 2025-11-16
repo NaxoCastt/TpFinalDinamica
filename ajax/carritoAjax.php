@@ -96,6 +96,12 @@ switch ($accion) {
         }
         break;
 
+    case 'finalizarCompra':
+        // Validamos que haya sesión 
+        $res = $controlCarrito->finalizarCompra($idUsuario);
+        $respuesta = $res;
+        break;
+
     default:
         $respuesta['msg'] = "Acción no válida.";
         break;
