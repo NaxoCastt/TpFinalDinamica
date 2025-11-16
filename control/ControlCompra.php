@@ -1,37 +1,26 @@
 <?php
 class ControlCompra {
 
-    /**
-     * Gestiona el cambio de estado de una compra.
-     * Actualiza fechas, cambia el tipo y ejecuta acciones colaterales (como devolver stock).
-     */
     public function cambiarEstado($idCompra, $nuevoTipoEstado) {
         $abmEstado = new ABMCompraEstado();
-        $abmCompra = new ABMCompra();
+        $abmCompra = new ABMCompra(); // Necesitamos esto
         
-        // 1. Buscamos el estado actual de la compra
+        // 1. Buscamos el estado actual
         $listaEstados = $abmEstado->buscar(['idcompra' => $idCompra]);
-
-        if (count($listaEstados) == 0) {
-            return ['exito' => false, 'msg' => 'No se encontró el estado de la compra.'];
-        }
-
+        // ... (tu código existente) ...
         $objEstadoActual = $listaEstados[0];
 
-        // 2. Definir lógica de fechas (Fecha Fin)
-        // Si pasa a "Enviada" (3) o "Cancelada" (4), cerramos la fecha.
+        // 2. Definir lógica de fechas
         $fechaFin = null;
         if ($nuevoTipoEstado == 3 || $nuevoTipoEstado == 4) {
             $fechaFin = date("Y-m-d H:i:s");
         }
-
-        // 3. Preparar actualización
         $paramUpdate = [
             'idcompraestado' => $objEstadoActual->getIdcompraestado(),
-            'idcompra' => $idCompra,
-            'idcompraestadotipo' => $nuevoTipoEstado,
-            'cefechaini' => $objEstadoActual->getCefechaini(), // Mantenemos inicio original
-            'cefechafin' => $fechaFin
+            'idcompra' => $objEstadoActual->getIdcompra(),
+            'idcompraestadotipo' => $nuevoTipoEstado, // El nuevo estado
+            'cefechaini' => $objEstadoActual->getCefechaini(), // La fecha de inicio original
+            'cefechafin' => $fechaFin // La nueva fecha de fin (o null)
         ];
 
         // 4. Ejecutar modificación
@@ -42,13 +31,55 @@ class ControlCompra {
                  $this->devolverStock($idCompra);
             }
 
-            // ACCIÓN COLATERAL: Aquí podrías agregar envío de mails en el futuro
+            // ----------- INICIO ENVÍO DE CORREO (ESTADOS 2, 3, 4) -----------
+            try {
+                // Buscamos los datos del usuario para enviarle el mail
+                $compra = $abmCompra->buscar(['idcompra' => $idCompra])[0];
+                $abmUsuario = new AbmUsuario();
+                $usuario = $abmUsuario->buscar(['idusuario' => $compra->getIdusuario()])[0];
+
+                $asunto = "";
+                $cuerpoHTML = "";
+
+                switch ($nuevoTipoEstado) {
+                    case 2: // Aceptada
+                        $asunto = "¡Tu pedido fue aceptado!";
+                        $cuerpoHTML = "<h1>Hola " . $usuario->getUsnombre() . "</h1>" .
+                                      "<p>Tu pedido (ID: " . $idCompra . ") fue aceptado y está siendo preparado.</p>";
+                        break;
+                    
+                    case 3: // Enviada
+                        $asunto = "¡Tu pedido está en camino!";
+                        $cuerpoHTML = "<h1>Hola " . $usuario->getUsnombre() . "</h1>" .
+                                      "<p>Tu pedido (ID: " . $idCompra . ") ha sido enviado.</p>" .
+                                      "<p>¡Gracias por tu compra!</p>";
+                        break;
+
+                    case 4: // Cancelada
+                        $asunto = "Tu pedido fue cancelado";
+                        $cuerpoHTML = "<h1>Hola " . $usuario->getUsnombre() . "</h1>" .
+                                      "<p>Lamentamos informarte que tu pedido (ID: " . $idCompra . ") ha sido cancelado.</p>" .
+                                      "<p>Si crees que es un error, contacta a soporte.</p>";
+                        break;
+                }
+
+                // Si se definió un asunto, se envía el correo
+                if ($asunto != "") {
+                    ControlCorreo::enviarCorreo($usuario->getUsmail(), $usuario->getUsnombre(), $asunto, $cuerpoHTML);
+                }
+
+            } catch (Exception $e) {
+                // El estado se cambió bien, pero el mail falló
+                error_log("Falló el envío de correo al cambiar estado: " . $e->getMessage());
+            }
+            // ----------- FIN ENVÍO DE CORREO -----------
             
             return ['exito' => true, 'msg' => 'Estado actualizado correctamente.'];
         } else {
             return ['exito' => false, 'msg' => 'Error al actualizar en base de datos.'];
         }
     }
+// ... resto de la clase ...
 
     /**
      * Restaura el stock de los productos de una compra.

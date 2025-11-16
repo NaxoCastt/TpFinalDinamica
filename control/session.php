@@ -1,5 +1,4 @@
 <?php
-include_once "../../configuracion.php";
 class Session
 {
     private $mensajeError; // Variable para guardar el error

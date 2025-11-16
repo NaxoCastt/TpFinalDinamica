@@ -237,7 +237,28 @@ class ControlCarrito
             'idcompraestadotipo' => 1 // Iniciada
         ];
         
-        if ($abmEstado->alta($paramEstado)) {
+       if ($abmEstado->alta($paramEstado)) {
+            
+            // INICIO ENVÍO DE CORREO (ESTADO INICIADO)
+            try {
+                $abmUsuario = new AbmUsuario();
+                $listaUs = $abmUsuario->buscar(['idusuario' => $idUsuario]);
+                if (count($listaUs) > 0) {
+                    $usuario = $listaUs[0];
+                    
+                    $asunto = "¡Gracias por tu compra!";
+                    $cuerpoHTML = "<h1>Hola " . $usuario->getUsnombre() . "</h1>" .
+                                  "<p>Hemos recibido tu pedido (ID: " . $objCompra->getIdcompra() . ").</p>" .
+                                  "<p>Te notificaremos cuando sea aceptado.</p>";
+                                  
+                    ControlCorreo::enviarCorreo($usuario->getUsmail(), $usuario->getUsnombre(), $asunto, $cuerpoHTML);
+                }
+            } catch (Exception $e) {
+                // No detenemos la compra si el mail falla, pero lo registramos
+                error_log("Falló el envío de correo de Compra Iniciada: " . $e->getMessage());
+            }
+            // ----------- FIN ENVÍO DE CORREO -----------
+
             return ['exito' => true, 'msg' => 'Compra finalizada con éxito.'];
         } else {
             return ['exito' => false, 'msg' => 'Error al registrar el estado de la compra.'];

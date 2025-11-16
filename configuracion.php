@@ -23,5 +23,5 @@ $PRINCIPAL = "Location:http://".$_SERVER['HTTP_HOST']."/$PROYECTO/index.php";
 
 
 $_SESSION['ROOT']=$ROOT;
-
+include_once($ROOT.'vendor/autoload.php');
 ?>
