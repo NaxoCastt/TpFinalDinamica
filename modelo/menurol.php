@@ -21,10 +21,10 @@ class Menurol
         $this->setIdrol($idrol);
     }
 
-    public function buscar($idmenu)
+    public function buscar($idrol)
     {
         $base = new BaseDatos();
-        $consulta = "SELECT * FROM menurol WHERE idmenu=" . $idmenu;
+        $consulta = "SELECT * FROM menurol WHERE idrol=" . $idrol;
         $resp = false;
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
@@ -88,6 +88,23 @@ class Menurol
         $base = new BaseDatos();
         $resp = false;
         $consulta = "DELETE FROM menurol WHERE idmenu=" . $this->getIdmenu();
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($consulta)) {
+                $resp = true;
+            } else {
+                self::$mensajeOperacion = $base->getError();
+            }
+        } else {
+            self::$mensajeOperacion = $base->getError();
+        }
+        return $resp;
+    }
+
+    public function modificar()
+    {
+        $resp = false;
+        $base = new BaseDatos();
+        $consulta = "UPDATE menurol SET idrol=" . $this->getIdrol() . " WHERE idmenu=" . $this->getIdmenu();
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 $resp = true;

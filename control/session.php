@@ -44,9 +44,11 @@ class Session
                     $objRol = new Rol();
                     if ($objRol->buscar($idRol)) {
                         $roles[] = $objRol->getRodescripcion();
+                        $idRoles[] = $objRol->getIdrol();
                     }
                 }
                 $_SESSION['roles'] = $roles;
+                $_SESSION['idRoles'] = $idRoles;
                 
             } else {
                 $this->mensajeError = "Usuario o contraseña incorrectos.";
@@ -109,6 +111,15 @@ class Session
         $roles = [];
         if ($this->activa() && isset($_SESSION['roles'])) {
             $roles = $_SESSION['roles'];
+        }
+        return $roles;
+    }
+
+    public function getIdRol(){
+
+        $roles = [];
+        if ($this->activa() && isset($_SESSION['idRoles'])) {
+            $roles = $_SESSION['idRoles'];
         }
         return $roles;
     }

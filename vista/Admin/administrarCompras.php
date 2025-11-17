@@ -14,6 +14,8 @@ if (!$objSession->validar() || !in_array('Admin', $objSession->getRol())) {
 <head>
     <meta charset="UTF-8">
     <title>Administrar Compras</title>
+    <link rel="icon" type="image/png" href="/tpfinaldinamica/util/logo.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
