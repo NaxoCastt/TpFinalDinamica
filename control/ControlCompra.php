@@ -3,14 +3,13 @@ class ControlCompra {
 
     public function cambiarEstado($idCompra, $nuevoTipoEstado) {
         $abmEstado = new ABMCompraEstado();
-        $abmCompra = new ABMCompra(); // Necesitamos esto
+        $abmCompra = new ABMCompra(); 
         
-        // 1. Buscamos el estado actual
+        // Buscamos el estado actual
         $listaEstados = $abmEstado->buscar(['idcompra' => $idCompra]);
-        // ... (tu código existente) ...
         $objEstadoActual = $listaEstados[0];
 
-        // 2. Definir lógica de fechas
+        // Definir lógica de fechas
         $fechaFin = null;
         if ($nuevoTipoEstado == 3 || $nuevoTipoEstado == 4) {
             $fechaFin = date("Y-m-d H:i:s");
@@ -23,7 +22,7 @@ class ControlCompra {
             'cefechafin' => $fechaFin // La nueva fecha de fin (o null)
         ];
 
-        // 4. Ejecutar modificación
+        // Ejecutar modificación
         if ($abmEstado->modificacion($paramUpdate)) {
             
             // ACCIÓN COLATERAL: Devolver Stock si se cancela
@@ -31,7 +30,7 @@ class ControlCompra {
                  $this->devolverStock($idCompra);
             }
 
-            // ----------- INICIO ENVÍO DE CORREO (ESTADOS 2, 3, 4) -----------
+            // INICIO ENVÍO DE CORREO (ESTADOS 2, 3, 4) 
             try {
                 // Buscamos los datos del usuario para enviarle el mail
                 $compra = $abmCompra->buscar(['idcompra' => $idCompra])[0];
@@ -79,7 +78,6 @@ class ControlCompra {
             return ['exito' => false, 'msg' => 'Error al actualizar en base de datos.'];
         }
     }
-// ... resto de la clase ...
 
     /**
      * Restaura el stock de los productos de una compra.
