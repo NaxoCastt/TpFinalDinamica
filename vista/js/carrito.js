@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // 2. Evento para detectar cambio de cantidad
+    //Evento para detectar cambio de cantidad
     document.addEventListener("change", (e) => {
         if (e.target.classList.contains("input-cantidad")) {
             const input = e.target;
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const maxStock = parseInt(input.getAttribute("max"));
             const oldValue = input.dataset.oldValue;
 
-            // Validación básica frontend
+            // Validación básica
             if (nuevaCantidad < 1) {
                 Swal.fire("Error", "La cantidad mínima es 1", "warning");
                 input.value = oldValue;
@@ -101,6 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         timerProgressBar: true
                     });
                     Toast.fire({ icon: 'success', title: 'Cantidad actualizada' });
+                    // Disparamos el evento para que el carrito del header se actualice
+                     document.dispatchEvent(new CustomEvent('cartUpdated'));
 
                 } else {
                     Swal.fire("Error", data.msg, "error");
@@ -127,6 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     eliminarItem(idItem);
+                    // Disparamos el evento para que el carrito del header se actualice
+                     document.dispatchEvent(new CustomEvent('cartUpdated'));
                 }
             });
         }

@@ -80,8 +80,11 @@ class Usuario
     {
         $base = new BaseDatos();
         $resp = false;
+        //siempre se va a insertar un usuario que NO esté deshabilitadoS
         $consulta = "INSERT INTO usuario(usnombre, uspass, usmail, usdeshabilitado) 
-                     VALUES ('" . $this->getUsnombre() . "','" . $this->getUspass() . "','" . $this->getUsmail() . "','" . $this->getUsdeshabilitado() . "')";
+                     VALUES ('" . $this->getUsnombre() . "','" . $this->getUspass() . "','" .
+            $this->getUsmail() . "',NULL)";
+
         if ($base->Iniciar()) {
             if ($idAutoIncrement = $base->Ejecutar($consulta)) {
                 $this->setIdusuario($idAutoIncrement);

@@ -83,6 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   timer: 1500,
                   toast: true
               });
+              // Disparamos el evento para que el header se actualice
+              document.dispatchEvent(new CustomEvent('cartUpdated'));
           } else {
       
               Swal.fire({

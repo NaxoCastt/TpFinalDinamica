@@ -2,6 +2,58 @@ document.addEventListener("DOMContentLoaded", () => {
   let $ul = document.getElementById("ulMenu");
   const rol = $ul.dataset.rol;
   let $paraAgregar = "";
+
+/**
+   * Consulta el carrito activo y actualiza el contador del header.
+   */
+  function actualizarContadorCarrito() {
+    const $contador = document.getElementById("cart-count");
+    if (!$contador) {
+      return;
+    }
+
+    fetch("/tpfinaldinamica/ajax/carritoAjax.php?accion=listar", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Respuesta de red no fue ok');
+        }
+        return response.json();
+    })
+    .then(items => {
+        let totalProductos = 0;
+        
+        if (Array.isArray(items) && items.length > 0) {
+            totalProductos = items.reduce((total, item) => {
+                return total + parseInt(item.cantidad, 10); 
+            }, 0);
+        }
+
+        if (totalProductos > 0) {
+            $contador.innerHTML = totalProductos;
+            $contador.style.display = 'block'; 
+        } else {
+            $contador.style.display = 'none'; 
+        }
+    })
+    .catch(err => {
+        console.error("Error al cargar contador de carrito:", err);
+        $contador.style.display = 'none'; 
+    });
+  }
+
+  // Llamar a la función al cargar el header
+  actualizarContadorCarrito();
+
+  // Escuchar el evento personalizado 'cartUpdated' en todo el documento.
+  // Cuando se dispare, vuelve a ejecutar la función del contador.
+  document.addEventListener('cartUpdated', function() {
+      actualizarContadorCarrito();
+  });
+
+
   //llamamos a los submenues para despues juntarlos con logica
   fetch("/tpfinaldinamica/ajax/menuHeaderAjax.php", {
     method: "POST",
@@ -29,18 +81,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const subArray = Array.isArray($subMenues) ? $subMenues : [];
 
-          
-            data.forEach((elementPrincipal) => {
-              let $subMenusLi = "";
-              subArray.forEach((elementSub) => {
-                if (elementSub.idpadre == elementPrincipal.idmenu) {
-                  $subMenusLi += `<li><a class="dropdown-item" href="${elementSub.medescripcion}">${elementSub.menombre}</a></li>`;
-                }
-              });
-              if ($subMenusLi === "") {
-                $subMenusLi = `<li><span class="dropdown-item text-muted">Sin submenús</span></li>`;
+
+          data.forEach((elementPrincipal) => {
+            let $subMenusLi = "";
+            subArray.forEach((elementSub) => {
+              if (elementSub.idpadre == elementPrincipal.idmenu) {
+                $subMenusLi += `<li><a class="dropdown-item" href="${elementSub.medescripcion}">${elementSub.menombre}</a></li>`;
               }
-              $paraAgregar += `
+            });
+            if ($subMenusLi === "") {
+              $subMenusLi = `<li><span class="dropdown-item text-muted">Sin submenús</span></li>`;
+            }
+            $paraAgregar += `
                 <li class="nav-item dropdown">
                   <a href="${elementPrincipal.medescripcion}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     ${elementPrincipal.menombre}
@@ -50,11 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
                   </ul>
                 </li>
               `;
-            });
-          
-            
+          });
+
+
           $ul.insertAdjacentHTML("beforeend", $paraAgregar);
-          
+
         })
         .catch((err) => {
           console.error("Error al cargar menús:", err);

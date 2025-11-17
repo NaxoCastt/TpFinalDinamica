@@ -13,8 +13,6 @@
         
       </ul>
 
-      <!-- seccion de Ver Como -->
-
       <?php if ($_SESSION['roles'][0] == "Admin") {
 
         echo ('<div class="dropdown">
@@ -27,7 +25,17 @@
             </ul>
           </div>');
       } ?>
+      
       <div class="d-flex align-items-center">
+
+        <a href="/tpfinaldinamica/vista/Cliente/carrito.php" class="btn btn-outline-dark btn-sm me-3 position-relative" title="Ver Carrito">
+            <i class="bi bi-cart fs-5"></i>
+            <span id="cart-count" 
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                  style="display: none; font-size: 0.6em;">
+                0
+            </span>
+        </a>
         <span class="me-3 text-dark fw-semibold">
           <i class="bi bi-person-circle me-1"></i>Hola, <?php echo $_SESSION['usnombre']; ?>
         </span>
@@ -35,7 +43,7 @@
           <i class="bi bi-box-arrow-right"></i> Salir
         </a>
       </div>
-    </div>
+      </div>
   </div>
 </nav>
 

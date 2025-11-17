@@ -13,6 +13,11 @@
             <div class="alert alert-danger"><?php echo htmlspecialchars($_GET['error']); ?></div>
         <?php endif; ?>
 
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($_GET['success']); ?></div>
+        <?php endif; ?>
+        <form action="accion/verificarLogin.php" method="POST">
+
         <form action="accion/verificarLogin.php" method="POST">
             <div class="mb-3">
                 <label class="form-label">Email</label>
@@ -24,6 +29,9 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Ingresar</button>
         </form>
+        <div class="text-center mt-3">
+            <small>¿No tenés cuenta? <a href="registro.php">Registrate acá</a></small>
+        </div>
     </div>
 </body>
 </html>

@@ -63,23 +63,19 @@ class AbmUsuario
      */
     public function alta($param)
     {
-        $resp = false;
+        $resp = false; 
 
         // Verificar si ya existe el email
         $existe = $this->buscar(['usmail' => $param['usmail']]);
         if (count($existe) <= 0) {
 
-            // --- CAMBIO ---
-            // Ya no se hashea la contraseña.
-            // Se asume que $param['uspass'] viene con el texto plano 
-            // y 'cargarObjeto' lo tomará directamente.
-            // --- FIN CAMBIO ---
-
             $objUsuario = $this->cargarObjeto($param);
             if ($objUsuario != null && $objUsuario->insertar()) {
-                $resp = true;
+                //En lugar de true, devolvemos el ID
+                $resp = $objUsuario->getIdusuario(); 
             }
         }
+        // Si el email ya existe, $resp sigue siendo 'false'
         return $resp;
     }
 
