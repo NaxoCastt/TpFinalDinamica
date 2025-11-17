@@ -64,6 +64,43 @@ switch ($accion) {
             $respuesta = $menus;
         }
         break;
+
+    case 'listar':
+        $datos = data_submitted();
+        $respuesta = $obj->listar("medeshabilitado IS NULL");
+
+        break;
+
+    case 'listardeshabilitados':
+        $datos = data_submitted();
+        $respuesta = $obj->listar("medeshabilitado IS NOT NULL");
+
+
+        $respuesta = $salida;
+        break;
+
+    case 'alta':
+        $datos = data_submitted();
+        $respuesta = $objMenu->alta($datos);
+
+        break;
+
+    case 'baja':
+        $inputJSON = file_get_contents('php://input');
+        $datos = json_decode($inputJSON, true);
+        $respuesta = $objMenu->baja($datos['idmenu']);
+
+        break;
+
+    case 'bajaDefinitiva':
+        $inputJSON = file_get_contents('php://input');
+        $datos = json_decode($inputJSON, true);
+        $respuesta = $objMenu->bajaFisica($datos['idmenu']);
+
+
+        break;
+
+
     default:
         $respuesta = ["error" => "Accion desconocida"];
         break;

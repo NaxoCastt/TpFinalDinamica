@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const rol = $ul.dataset.rol;
   let $paraAgregar = "";
   //llamamos a los submenues para despues juntarlos con logica
-  fetch("/tpfinaldinamica/ajax/menuAjax.php", {
+  fetch("/tpfinaldinamica/ajax/menuHeaderAjax.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -13,11 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
   })
     .then((response) => response.json())
     .then(($subMenues) => {
-      console.log("Submenues cargados:", $subMenues);
 
       //llamamos a los menues principales
 
-      fetch("/tpfinaldinamica/ajax/menuAjax.php", {
+      fetch("/tpfinaldinamica/ajax/menuHeaderAjax.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("principales cargados", data);
 
           const subArray = Array.isArray($subMenues) ? $subMenues : [];
 
@@ -54,8 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
               `;
             });
           
-
+            
           $ul.insertAdjacentHTML("beforeend", $paraAgregar);
+          
         })
         .catch((err) => {
           console.error("Error al cargar menús:", err);
