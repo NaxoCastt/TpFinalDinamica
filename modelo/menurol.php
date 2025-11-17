@@ -12,7 +12,7 @@ class Menurol
     {
         $this->idmenu = "";
         $this->idrol = "";
-        $this->mensajeOperacion = "";
+        self::$mensajeOperacion = "";
     }
 
     public function cargar($idmenu, $idrol)

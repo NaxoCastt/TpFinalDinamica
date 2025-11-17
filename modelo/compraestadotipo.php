@@ -13,7 +13,7 @@ class Compraestadotipo
         $this->idcompraestadotipo = "";
         $this->cetdescripcion = "";
         $this->cetdetalle = "";
-        $this->mensajeOperacion = "";
+        self::$mensajeOperacion = "";
     }
 
     public function cargar($idcompraestadotipo, $cetdescripcion, $cetdetalle)

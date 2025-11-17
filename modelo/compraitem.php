@@ -14,7 +14,7 @@ class Compraitem
         $this->idproducto = "";
         $this->idcompra = "";
         $this->cicantidad = "";
-        $this->mensajeOperacion = "";
+        self::$mensajeOperacion = "";
     }
 
     public function cargar($idcompraitem, $idproducto, $idcompra, $cicantidad)
