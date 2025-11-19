@@ -29,7 +29,7 @@ if (!in_array('Admin', $objSession->getRol())) {
 <body class="bg-light">
 
   <?php include_once '../../estructura/header.php' ?>
-  <div class="container py-5">
+  <div class="container py-5" style="min-height: 72vh">
     <div class="p-4 rounded-4 shadow-lg" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc);">
       <h2 class="text-center text-white mb-4">
         <i class="bi bi-stars"></i> Catálogo de Juguetes

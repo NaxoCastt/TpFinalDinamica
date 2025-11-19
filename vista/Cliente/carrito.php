@@ -21,7 +21,7 @@ if (!$objSession->validar()) {
     <?php include_once '../../estructura/header.php' ?>
 
 
-    <div class="container mt-4">
+    <div class="container mt-4" style="min-height: 72vh">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
                 <h4 class="mb-0"><i class="bi bi-cart"></i> Tu Carrito de Compras</h4>

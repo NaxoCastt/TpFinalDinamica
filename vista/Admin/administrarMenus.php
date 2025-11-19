@@ -29,7 +29,7 @@ if (!in_array('Admin', $objSession->getRol())) {
 <body class="bg-light">
 
   <?php include_once '../../estructura/header.php' ?>
-  <div class="container py-5">
+  <div class="container py-5" style="min-height: 72vh">
     <div class="p-4 rounded-4 shadow-lg" style="background: linear-gradient(135deg, #9037e2ff, #8ec5fc);">
       <h2 class="text-center text-white mb-4">
         <i class="bi bi-stars"></i> Modificacion de menus
@@ -74,7 +74,7 @@ if (!in_array('Admin', $objSession->getRol())) {
                 </div>
                 <div class="mb-3">
                   <label for="message-text" class="col-form-label">id del padre</label>
-                  <input type="idpadre" class="form-control" id="idpadre" name="procantstock" value="null" placeholder="Dejar en blanco para principal" max="9999"
+                  <input type="number" class="form-control" id="idpadre" name="idpadre" placeholder="Dejar en blanco para principal" max="9999"
                     step="1" min="1"></input>
                 </div>
 
@@ -135,7 +135,7 @@ if (!in_array('Admin', $objSession->getRol())) {
                 <input type="number" class="form-control" id="idpadreEdicion" name="idpadreEdicion" placeholder="Dejar en blanco para principal" max="9999"
                   step="1" min="-1"></input>
               </div>
-              <div class="form-check mb-3 d-none" id="estadoMenu">
+              <div class="form-check mb-3 d-none" id="estadoMenuWrapper">
                 <input class="form-check-input" type="checkbox" id="estadoMenuCheck" name="estadoMenuCheck">
                 <label class="form-check-label" for="estadoMenuCheck">
                   Activar este menú

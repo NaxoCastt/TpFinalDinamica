@@ -8,14 +8,14 @@ class ABMMenu
         $resp = false;
         $obj = new Menu();
         $idpadre = $param['idpadre'];
-        if ($idpadre === "null" || $idpadre === "") {
-            $idpadre = null;
-        }
+        $idpadreSQL = ($idpadre === null || $idpadre === '') ? "NULL" : intval($idpadre);
 
-        $obj->cargar(0, $param['menombre'], $param['medescripcion'], $idpadre, NULL);
+        $obj->cargar(0, $param['menombre'], $param['medescripcion'], $idpadreSQL, NULL);
         if ($obj->insertar()) {
             $resp = true;
         }
+        error_log("Resultado de alta: " . var_export($resp, true));
+
         return $resp;
     }
 
@@ -53,12 +53,12 @@ class ABMMenu
         if ($idpadre === "null" || $idpadre === "") {
             $idpadre = null;
         }
-  
+        
         if ($obj->buscar($param['idmenu'])) {
-            $obj->cargar($param['idmenu'], $param['menombre'], $param['medescripcion'], $idpadre,  $param["medeshabilitado"]);
-            if ($obj->modificar()) {
-                $resp = true;
-            }
+            $obj->cargar($param['idmenu'], $param['menombre'], $param['medescripcion'], $idpadre,  $param['medeshabilitado']);
+            $resp =$obj->modificar();
+
+            
         }
         return $resp;
     }

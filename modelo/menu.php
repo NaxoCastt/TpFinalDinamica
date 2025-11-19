@@ -54,11 +54,14 @@ class Menu
         $base = new BaseDatos();
         $resp = false;
         $idpadre = $this->getIdpadre();
-        $idpadreSQL = ($idpadre === null || $idpadre === '') ? "NULL" : intval($idpadre);
-        $medeshabilitado = $this->getMedeshabilitado();
-        $medeshabilitadoSQL = ($medeshabilitado === null || $medeshabilitado === '') ? "NULL" : intval($medeshabilitado);
-
-        $consulta = "INSERT INTO menu(menombre, medescripcion, idpadre, medeshabilitado) VALUES ('" . $this->getMenombre() . "','" . $this->getMedescripcion() . "'," . $idpadreSQL . ", " . $medeshabilitadoSQL . ")";
+        if($idpadre == "-1" || $idpadre == ""){
+            $idpadreSQL = "NULL";
+        }
+        else{
+            $idpadreSQL =intval(trim($idpadre));
+        }
+        
+        $consulta = "INSERT INTO menu(menombre, medescripcion, idpadre) VALUES ('" . $this->getMenombre() . "','" . $this->getMedescripcion() . "'," . $idpadreSQL . ")";
         if ($base->Iniciar()) {
             if ($id = $base->Ejecutar($consulta)) {
                 $this->setIdmenu($id);
@@ -76,16 +79,25 @@ class Menu
     {
         $resp = false;
         $base = new BaseDatos();
-        $medeshabilitado = $this->getMedeshabilitado();
-        $medeshabilitadoSQL = ($medeshabilitado === null || $medeshabilitado === '')
-
-            ? "NULL"
-            : "'" . $medeshabilitado . "'";
         $idpadre = $this->getIdpadre();
         $idpadreSQL = ($idpadre === null || $idpadre === '') ? "NULL" : intval($idpadre);
 
+        $medeshabilitado = trim($this->getMedeshabilitado());
+
+        // Determinar qué hacer con medeshabilitado
+        if ($medeshabilitado === "-1") {
+            // Activar: poner NULL
+            $medeshabilitadoSQL = "NULL";
+        } elseif ($medeshabilitado === "0") {
+            // No tocar: mantener el valor actual
+            $medeshabilitadoSQL = "medeshabilitado"; // Campo sin comillas = mantener valor actual
+        } else {
+            // Tiene un valor (fecha o string): usarlo
+            $medeshabilitadoSQL = "'" . $medeshabilitado . "'";
+        }
 
         $consulta = "UPDATE menu SET menombre='" . $this->getMenombre() . "', medescripcion='" . $this->getMedescripcion() . "', idpadre=" . $idpadreSQL . ", medeshabilitado=" . $medeshabilitadoSQL . " WHERE idmenu=" . $this->getIdmenu();
+
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 $resp = true;

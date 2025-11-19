@@ -20,10 +20,10 @@ if (!$objSession->validar() || !in_array('Admin', $objSession->getRol())) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-light " >
     <?php include_once '../../estructura/header.php' ?>
 
-    <div class="container py-5">
+    <div class="container py-5" style="min-height: 72vh">
         <div class="card shadow-lg border-0">
             <div class="card-header bg-primary text-white">
                 <h3 class="mb-0"><i class="bi bi-bag-check-fill"></i> Gestión de Compras</h3>

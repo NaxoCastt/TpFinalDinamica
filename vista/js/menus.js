@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-id="${element.idmenu}">
       <i class="bi bi-pen"></i>
     </button> 
-    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-id="${element.idmenu}" data-stock="${element.medeshabilitado}"
+    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" id="botonBorrar"data-id="${element.idmenu}" data-stock="${element.medeshabilitado}"
  title="Borrar">
       <i class="bi bi-trash"></i>
     </button>
@@ -49,18 +49,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const $botonCrear = document.getElementById("agregar");
   const $nombre = document.getElementById("menombre");
   const $detalle = document.getElementById("medescripcion");
-  const $stock = document.getElementById("idpadre");
   const $form = document.getElementById("form");
+  let $stock = document.getElementById("idpadre");
 
   $botonCrear.addEventListener("click", () => {
-    // Activar validación visual
-    if (!$form.checkValidity()) {
-      $form.classList.add("was-validated");
-      return;
-    }
-    const formData = new FormData($form);
-    formData.append("id", $idEdicion);
+    let $idpadre = document.getElementById("idpadre").value;
+    $idpadre = ($idpadre ?? "").trim().toLowerCase();
+
+    $idpadre =
+      $idpadre === "" || $idpadre === "null" ? "-1" : parseInt($idpadre); 
+      
+      // Activar validación visual
+      if (!$form.checkValidity()) {
+        $form.classList.add("was-validated");
+        return;
+      }
+      console.log($idpadre);
+    const formData = new FormData();
     formData.append("medeshabilitado", null);
+     formData.append("menombre", $nombre.value.trim());
+     formData.append("medescripcion", $detalle.value.trim());
+    formData.append("idpadre", $idpadre);
     formData.append("accion", "alta");
     fetch("../../ajax/menuModificacionAjax.php", {
       method: "POST",
@@ -191,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
-          const $estadoWrapper = document.getElementById("estadoMenu");
+          const $estadoWrapper = document.getElementById("estadoMenuWrapper");
           if (data[0].medeshabilitado !== null) {
             $estadoWrapper.classList.remove("d-none");
           } else {
@@ -207,82 +216,74 @@ document.addEventListener("DOMContentLoaded", () => {
           $stockEdicion.value = data[0].idpadre;
         }
         $modalEditar.show();
-
-        //seccion de confirmacion de la edicion
-
-        const $botonConfirmacionEditar = document.getElementById(
-          "btnEditarConfirmacion"
-        );
-        $botonConfirmacionEditar.addEventListener("click", () => {
-          // Activar validación visual
-          if (!$formEdicion.checkValidity()) {
-            $formEdicion.classList.add("was-validated");
-            return;
-          }
-          const habilitado = data[0].medeshabilitado == null;
-
-          const $checkboxEstado = document.getElementById("estadoMenuCheck");
-          if ($checkboxEstado) {
-            $checkboxEstado.checked = habilitado;
-          }
-          const medeshabilitado =
-            $checkboxEstado && $checkboxEstado.checked
-              ? null // enviado como NULL en el servidor
-              : new Date().toISOString().slice(0, 19).replace("T", " ");
-
-          document.getElementById("idEdicion").value = $idEdicion;
-          $nombreEdicion = document.getElementById("menombreEdicion");
-          $detalleEdicion = document.getElementById("medescripcionEdicion");
-          $stockEdicion = document.getElementById("idpadreEdicion");
-
-          const formData = new FormData($formEdicion);
-          formData.append("medeshabilitado", medeshabilitado);
-          formData.append("idmenu", $idEdicion);
-          formData.append("accion", "editar");
-          formData.append("menombre", $nombreEdicion.value);
-          formData.append("idpadre", $stockEdicion.value);
-          formData.append("medescripcion", $detalleEdicion.value.trim() || "");
-
-          fetch("../../ajax/menuModificacionAjax.php", {
-            method: "POST",
-            body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data) {
-                Swal.fire(
-                  "¡Menu Editado!",
-                  "Se modificó correctamente al menu",
-                  "success"
-                );
-                $modalEditar.hide();
-                document.activeElement?.blur();
-                if ($stockEdicion.value > 0) {
-                  actualizarTabla();
-                } else {
-                  VerTablaSinStock();
-                }
-              } else {
-                Swal.fire(
-                  "Error",
-                  data.message || "No se pudo editar el menu",
-                  "error"
-                );
-              }
-            })
-            .catch((error) => {
-              console.error("Error AJAX:", error);
-              Swal.fire(
-                "Error",
-                "Hubo un problema de conexión al editar",
-                "error"
-              );
-            });
-        });
       })
       .catch((error) => {
         console.error("Error AJAX:", error);
         Swal.fire("Error", "Hubo un problema de conexión", "error");
+      });
+  });
+  //seccion de confirmacion de la edicion
+  const $botonConfirmacionEditar = document.getElementById(
+    "btnEditarConfirmacion"
+  );
+  $botonConfirmacionEditar.addEventListener("click", () => {
+    // Activar validación visual
+    if (!$formEdicion.checkValidity()) {
+      $formEdicion.classList.add("was-validated");
+      return;
+    }
+    const $checkboxEstado = document.getElementById("estadoMenuCheck");
+    const medeshabilitado =
+      $checkboxEstado && $checkboxEstado.checked
+        ? "-1" //Esto es si llega a estar en null
+        : "0"; //Esto es si llega a no tener ningun valor
+
+    document.getElementById("idEdicion").value = $idEdicion;
+    $nombreEdicion = document.getElementById("menombreEdicion");
+    $detalleEdicion = document.getElementById("medescripcionEdicion");
+    $stockEdicion = document.getElementById("idpadreEdicion");
+
+    const formData = new FormData($formEdicion);
+    formData.append("medeshabilitado", medeshabilitado);
+    formData.append("idmenu", $idEdicion);
+    formData.append("accion", "editar");
+    formData.append("menombre", $nombreEdicion.value);
+    formData.append("idpadre", $stockEdicion.value);
+    formData.append("medescripcion", $detalleEdicion.value.trim() || "");
+
+    fetch("../../ajax/menuModificacionAjax.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data) {
+          Swal.fire(
+            "¡Menu Editado!",
+            "Se modificó correctamente al menu",
+            "success"
+          );
+          $modalEditar.hide();
+          document.activeElement?.blur();
+          $chequeadorDeDeshabilitado =
+            document.getElementById("botonBorrar").dataset.stock;
+
+          if ($chequeadorDeDeshabilitado === "null") {
+            actualizarTabla();
+          } else {
+            VerTablaSinStock();
+          }
+        } else {
+          Swal.fire(
+            "Error",
+            data.message || "No se pudo editar el menu",
+            "error"
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error AJAX:", error);
+        Swal.fire("Error", "Hubo un problema de conexión al editar", "error");
       });
   });
 
@@ -318,7 +319,20 @@ document.addEventListener("DOMContentLoaded", () => {
         $tabla.innerHTML = dibujarTabla($productos);
       });
   }
+
+  let $estado = "activo";
   $botonVerSinStock.addEventListener("click", () => {
-    VerTablaSinStock();
+    console.log($estado);
+    if ($estado !== "activo") {
+      $botonVerSinStock.innerHTML =
+        '<i class="bi bi-plus"> Ver menus desactivados</i>';
+      actualizarTabla();
+      $estado = "activo";
+    } else {
+      $botonVerSinStock.innerHTML =
+        '<i class="bi bi-plus"> Ver menus activados</i>';
+      $estado = "desactivado";
+      VerTablaSinStock();
+    }
   });
 });
