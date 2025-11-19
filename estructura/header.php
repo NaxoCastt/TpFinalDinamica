@@ -6,7 +6,7 @@
 
     <!-- Logo -->
     <a class="navbar-brand text-white fw-bold d-flex align-items-center gap-2">
-      <img src="../../util/logo.png"
+      <img src="/tpfinaldinamica/util/logo.png"
         style="height: 50px; width: 50px; object-fit: cover; border-radius: 50%; transform: scale(1.7); transform-origin: center; box-shadow: 0 0 10px rgba(255,255,255,0.4);"
         alt="Logo de iupi">
     </a>
@@ -35,19 +35,19 @@
           </a>
         </li>
         <li class="nav-item ">
-          <a href="/tpfinaldinamica/vista/Cliente/productos.php" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
+          <a href="/tpfinaldinamica/vista/sobreNosotros.php" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
             <i class="bi bi-info-circle fs-5 me-1"></i>Sobre nosotros
 
           </a>
         </li>
         <li class="nav-item ">
-          <a href="/tpfinaldinamica/vista/Cliente/productos.php" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
+          <a href="#" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
             <i class="bi bi-whatsapp fs-5 me-1"></i>Contacto
 
           </a>
         </li>
         <li class="nav-item ">
-          <a href="/tpfinaldinamica/vista/Cliente/productos.php" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
+          <a href="https://maps.app.goo.gl/GznYKFWvudzCuhqe8" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
             <i class="bi bi-geo-alt fs-5 me-1"></i>Donde encontrarnos
 
           </a>

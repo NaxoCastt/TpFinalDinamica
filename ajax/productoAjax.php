@@ -48,6 +48,83 @@ switch ($accion) {
         $respuesta = $salida;
         break;
 
+    case 'listarUltimos':
+
+        $datos = data_submitted();
+        $respuesta = $obj->listarProductos("procantstock > 0
+                ORDER BY idproducto DESC
+                LIMIT 3;
+                ");
+
+        $extensiones = ['jpg', 'png', 'webp', 'jpeg'];
+        $carpeta = '../util/imagenesProductos/';
+
+        foreach ($respuesta as $item) {
+            $imagen = 'default.png';
+            $extension = 'png';
+
+            if (is_object($item) && method_exists($item, 'getIdproducto')) {
+                foreach ($extensiones as $ext) {
+                    $ruta = $carpeta . $item->getIdproducto() . '.' . $ext;
+                    if (file_exists($ruta)) {
+                        $imagen = $item->getIdproducto() . '.' . $ext;
+                        $extension = $ext;
+                        break;
+                    }
+                }
+
+                $salida[] = [
+                    'idproducto'   => $item->getIdproducto(),
+                    'pronombre'    => $item->getPronombre(),
+                    'prodetalle'   => $item->getProdetalle(),
+                    'procantstock' => $item->getProcantstock(),
+                    'imagen'       => $imagen,
+                    'extension'    => $extension
+                ];
+            }
+        }
+
+        $respuesta = $salida;
+        break;
+    case 'listarMasVendidos':
+
+        $datos = data_submitted();
+        $respuesta = $obj->listarProductos("procantstock > 0
+                ORDER BY procantstock ASC
+                LIMIT 3;
+                ");
+
+        $extensiones = ['jpg', 'png', 'webp', 'jpeg'];
+        $carpeta = '../util/imagenesProductos/';
+
+        foreach ($respuesta as $item) {
+            $imagen = 'default.png';
+            $extension = 'png';
+
+            if (is_object($item) && method_exists($item, 'getIdproducto')) {
+                foreach ($extensiones as $ext) {
+                    $ruta = $carpeta . $item->getIdproducto() . '.' . $ext;
+                    if (file_exists($ruta)) {
+                        $imagen = $item->getIdproducto() . '.' . $ext;
+                        $extension = $ext;
+                        break;
+                    }
+                }
+
+                $salida[] = [
+                    'idproducto'   => $item->getIdproducto(),
+                    'pronombre'    => $item->getPronombre(),
+                    'prodetalle'   => $item->getProdetalle(),
+                    'procantstock' => $item->getProcantstock(),
+                    'imagen'       => $imagen,
+                    'extension'    => $extension
+                ];
+            }
+        }
+
+        $respuesta = $salida;
+        break;
+
     case 'listarSinStock':
         $datos = data_submitted();
         $respuesta = $obj->listarProductosSinStock();
@@ -108,7 +185,7 @@ switch ($accion) {
         $inputJSON = file_get_contents('php://input');
         $datos = json_decode($inputJSON, true);
         $respuesta = $obj->bajaProducto($datos['id']);
-    
+
         break;
 
     case 'bajaDefinitiva':
