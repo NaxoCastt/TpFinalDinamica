@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //click en admin
   $verAdmin.addEventListener("click", () =>{
-    console.log("ola")
      fetch("/tpfinaldinamica/ajax/menuHeaderAjax.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -28,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
 })
   //Cambiar a Cliente
   $verCliente.addEventListener("click", () =>{
-    console.log("ola2")
      fetch("/tpfinaldinamica/ajax/menuHeaderAjax.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

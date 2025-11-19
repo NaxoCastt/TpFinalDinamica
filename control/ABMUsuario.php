@@ -149,4 +149,15 @@ public function modificacion($param)
         $arreglo = Usuario::listar($where);
         return $arreglo;
     }
+
+    public function buscarPorId($id){
+
+        $usuario = NULL;
+        $obj = new Usuario();
+        if($obj->buscar($id)){
+            $usuario = $obj;
+        }
+
+        return $usuario;
+    }
 }

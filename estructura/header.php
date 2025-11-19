@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@animxyz/core" />
 
 <nav class="navbar navbar-expand-lg shadow-lg border-bottom bg-light bg-opacity-75 backdrop-blur"
-  style="background: linear-gradient(135deg, #8ec5fc, #e0c3fc); border-bottom: 3px solid #fff;">
+  style="background: linear-gradient(135deg, #8ec5fc, #e0c3fc); border-bottom: 3px solid #fff; z-index: 1000">
   <div class="container-fluid m-2 gap-5">
 
     <!-- Logo -->
@@ -23,7 +23,7 @@
         data-rol="<?php echo $_SESSION["idRoles"][0]; ?>"
         style="background: linear-gradient(135deg, #8ec5fc, #e0c3fc); border: 1px solid rgba(255,255,255,0.3);">
         <li class="nav-item ">
-          <a href="/tpfinaldinamica/vista/Cliente/productos.php" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
+          <a href="/tpfinaldinamica/vista/index.php" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
             <i class="bi bi-house fs-5 me-1"></i>Inicio
 
           </a>
@@ -74,9 +74,9 @@
           <li>
             <h6 class="dropdown-header text-secondary">Cambiar vista</h6>
           </li>
-          <li><button class="dropdown-item fw-semibold" id="verAdmin">
+          <li><button class="dropdown-item fw-semibold" id="verAdmin"  style="z-index: 100">
               <i class="bi bi-person-badge-fill me-2 text-primary"></i>Administrador</button></li>
-          <li><button class="dropdown-item fw-semibold" id="verCliente">
+          <li><button class="dropdown-item fw-semibold" id="verCliente"  style="z-index: 100">
               <i class="bi bi-person me-2 text-success"></i>Cliente</button></li>
         </ul>
       </div>

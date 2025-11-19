@@ -106,6 +106,11 @@ class Session
         return $usuario;
     }
 
+    public function getIdUsuario(){
+
+        return $_SESSION['idusuario'];
+    }
+
     public function getRol()
     {
         $roles = [];

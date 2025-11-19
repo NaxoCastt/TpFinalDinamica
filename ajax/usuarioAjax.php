@@ -22,7 +22,7 @@ switch ($accion) {
 
         foreach ($listaUsuarios as $usuario) {
             $id = $usuario->getIdusuario();
-            
+
             // Buscar roles del usuario
             $rolesUser = $abmUsuarioRol->buscar(['idusuario' => $id]);
             $rolesStr = "";
@@ -69,7 +69,7 @@ switch ($accion) {
         // Logica equivalente a eliminarUsuario.php (Deshabilitar/Habilitar)
         if (isset($datos['idusuario']) && isset($datos['tipo_accion'])) {
             $lista = $abmUsuario->buscar(['idusuario' => $datos['idusuario']]);
-            
+
             if (count($lista) > 0) {
                 $usuario = $lista[0];
                 $params = [
@@ -101,6 +101,22 @@ switch ($accion) {
         }
         break;
 
+    case 'buscar':
+        $datos = json_decode(file_get_contents("php://input"), true);
+        $idUsuario = $datos['idUsuario'] ?? null;
+        $item = $abmUsuario->buscarPorId($datos['idUsuario']);
+        if ($item != NULL) {
+            $respuesta[] = [
+                'idusuario'   => $datos['idUsuario'],
+                'usnombre'    => $item->getUsnombre(),
+                'usmail'   => $item->getUsmail(),
+                'uspass' => $item->getUspass(),
+            ];
+        } else {
+
+            $respuesta = ['exito' => false, 'mensaje' => 'No se encontró el usuario con el id'];
+        }
+        break;
     case 'actualizar_roles':
         // Logica equivalente a actualizarRoles.php
         if (isset($datos['idusuario'])) {
@@ -120,7 +136,7 @@ switch ($accion) {
                 if (!is_array($rolesNuevos)) {
                     $rolesNuevos = [$rolesNuevos];
                 }
-                
+
                 foreach ($rolesNuevos as $idRol) {
                     if (!$abmUsuarioRol->alta(['idusuario' => $idUsuario, 'idrol' => $idRol])) {
                         $todoOk = false;
@@ -137,7 +153,7 @@ switch ($accion) {
             $respuesta = ['exito' => false, 'mensaje' => 'ID de usuario no proporcionado.'];
         }
         break;
-    
+
     default:
         $respuesta = ['exito' => false, 'mensaje' => 'Acción no definida'];
         break;
@@ -146,4 +162,3 @@ switch ($accion) {
 header('Content-Type: application/json');
 echo json_encode($respuesta);
 exit;
-?>
