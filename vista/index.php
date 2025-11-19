@@ -1,7 +1,10 @@
 <?php
 include_once "../configuracion.php";
 $objSession = new Session();
-
+if (!$objSession->validar()) {
+    header('Location: login.php?error=Debe iniciar sesion');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
