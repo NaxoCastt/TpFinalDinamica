@@ -315,10 +315,21 @@ document.addEventListener("DOMContentLoaded", () => {
         $tabla.innerHTML = dibujarTabla($productos);
       });
   }
+  let $estado = "activo";
   $botonVerSinStock.addEventListener("click", () => {
-    VerTablaSinStock();
-  });
+    console.log($estado);
+    if ($estado !== "activo") {
+      $botonVerSinStock.innerHTML =
+        '<i class="bi bi-plus"> Ver productos sin stock</i>';
+      actualizarTabla();
+      $estado = "activo";
+    } else {
+      $botonVerSinStock.innerHTML =
+        '<i class="bi bi-plus"> Ver productos con stock</i>';
+      $estado = "desactivado";
+      VerTablaSinStock();
+    }
+  
 
 
-
-});
+})})

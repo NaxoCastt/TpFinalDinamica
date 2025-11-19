@@ -1,4 +1,45 @@
 document.addEventListener("DOMContentLoaded", () => {
+    //Ver Como
+
+  $verComo = document.getElementById("verComo");
+  let $idRol1 = parseInt($verComo.dataset.rol);
+  let $idRol2 = parseInt($verComo.dataset.rol2);
+  let $verAdmin = document.getElementById("verAdmin");
+  let $verCliente = document.getElementById("verCliente");
+  if($idRol2 === 1){
+    $verComo.classList.remove("d-none")
+  }
+  else{
+    $verComo.classList.add("d-none")
+  }
+
+  //click en admin
+  $verAdmin.addEventListener("click", () =>{
+    console.log("ola")
+     fetch("/tpfinaldinamica/ajax/menuHeaderAjax.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      accion: "switchVerComo",
+      idRol: 1,
+    }),
+  })
+  location.reload();
+})
+  //Cambiar a Cliente
+  $verCliente.addEventListener("click", () =>{
+    console.log("ola2")
+     fetch("/tpfinaldinamica/ajax/menuHeaderAjax.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      accion: "switchVerComo",
+      idRol: 2,
+    }),
+  })
+  location.reload();
+})
+
   let $ul = document.getElementById("ulMenu");
   const rol = $ul.dataset.rol;
   let $paraAgregar = "";
@@ -44,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+
+
   // Llamar a la función al cargar el header
   actualizarContadorCarrito();
 
@@ -52,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener('cartUpdated', function() {
       actualizarContadorCarrito();
   });
+
 
 
   //llamamos a los submenues para despues juntarlos con logica
@@ -93,11 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
               $subMenusLi = `<li><span class="dropdown-item text-muted">Sin submenús</span></li>`;
             }
             $paraAgregar += `
-                <li class="nav-item dropdown">
-                  <a href="${elementPrincipal.medescripcion}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <li class="nav-item dropdown px-2 py-1">
+                  <a href="${elementPrincipal.medescripcion}" class="nav-link dropdown-toggle fw-semibold text-white d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
                     ${elementPrincipal.menombre}
                   </a>
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu xyz-in" xyz="fade up duration-5 ease-in-out">
                     ${$subMenusLi}
                   </ul>
                 </li>
@@ -116,3 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error al cargar Submenús:", err);
     });
 });
+
+
+
+  

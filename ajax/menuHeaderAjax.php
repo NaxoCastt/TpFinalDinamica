@@ -21,48 +21,47 @@ switch ($accion) {
     case ("listarMenus"):
         $respuesta = null;
 
-        if ($rol == 1) {
 
-            $ObjsMenusRoles = $objMenuRol->listar("idrol = " . $rol);
-            $ObjsMenus = [];
-            foreach ($ObjsMenusRoles as $item) {
+        $ObjsMenusRoles = $objMenuRol->listar("idrol = " . $rol);
+        $ObjsMenus = [];
+        foreach ($ObjsMenusRoles as $item) {
 
-                array_push($ObjsMenus, $objMenu->buscar($item->getIdmenu()));
-            }
-            $menus = [];
-
-            foreach ($ObjsMenus as $itemMenus) {
-                if ($itemMenus->getMedeshabilitado() == NULL && $itemMenus->getIdpadre() == NULL)
-                    $menus[] = [
-
-                        "idmenu" => $itemMenus->getIdmenu(),
-                        "menombre" => $itemMenus->getMenombre(),
-                        "medescripcion" => $itemMenus->getMedescripcion()
-                    ];
-            }
-
-            $respuesta = $menus;
+            array_push($ObjsMenus, $objMenu->buscar($item->getIdmenu()));
         }
+        $menus = [];
+
+        foreach ($ObjsMenus as $itemMenus) {
+            if ($itemMenus->getMedeshabilitado() == NULL && $itemMenus->getIdpadre() == NULL)
+                $menus[] = [
+
+                    "idmenu" => $itemMenus->getIdmenu(),
+                    "menombre" => $itemMenus->getMenombre(),
+                    "medescripcion" => $itemMenus->getMedescripcion()
+                ];
+        }
+
+        $respuesta = $menus;
+
         break;
 
     case "listarSubMenus":
 
-        if ($rol == 1) {
-            $respuesta = null;
-            $subMenus = $objMenu->listar("idpadre IS NOT NULL AND medeshabilitado IS NULL");
-            foreach ($subMenus as $itemMenus) {
-                if ($itemMenus->getMedeshabilitado() == NULL)
-                    $menus[] = [
 
-                        "idmenu" => $itemMenus->getIdmenu(),
-                        "idpadre" => $itemMenus->getIdpadre(),
-                        "menombre" => $itemMenus->getMenombre(),
-                        "medescripcion" => $itemMenus->getMedescripcion()
-                    ];
-            }
+        $respuesta = null;
+        $subMenus = $objMenu->listar("idpadre IS NOT NULL AND medeshabilitado IS NULL");
+        foreach ($subMenus as $itemMenus) {
+            if ($itemMenus->getMedeshabilitado() == NULL)
+                $menus[] = [
 
-            $respuesta = $menus;
+                    "idmenu" => $itemMenus->getIdmenu(),
+                    "idpadre" => $itemMenus->getIdpadre(),
+                    "menombre" => $itemMenus->getMenombre(),
+                    "medescripcion" => $itemMenus->getMedescripcion()
+                ];
         }
+
+        $respuesta = $menus;
+
         break;
 
     case 'listar':
@@ -100,6 +99,11 @@ switch ($accion) {
 
         break;
 
+    case "switchVerComo":
+        $inputJSON = file_get_contents('php://input');
+        $datos = json_decode($inputJSON, true);
+        $_SESSION['idRoles'][0] = $datos['idRol'];
+        break;
 
     default:
         $respuesta = ["error" => "Accion desconocida"];

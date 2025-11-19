@@ -48,6 +48,7 @@ class Session
                 }
                 $_SESSION['roles'] = $roles;
                 $_SESSION['idRoles'] = $idRoles;
+                $_SESSION['idRoles2'] = $idRoles; //Esto se va a usar para la opcion de Ver como
                 
             } else {
                 $this->mensajeError = "Usuario o contraseña incorrectos.";
@@ -113,12 +114,23 @@ class Session
         }
         return $roles;
     }
+    public function setIdRol($x){
+        $_SESSION['idRoles'] = $x;
+    }
 
     public function getIdRol(){
 
         $roles = [];
         if ($this->activa() && isset($_SESSION['idRoles'])) {
             $roles = $_SESSION['idRoles'];
+        }
+        return $roles;
+    }
+    public function getIdRol2(){
+
+        $roles = [];
+        if ($this->activa() && isset($_SESSION['idRoles'])) {
+            $roles = $_SESSION['idRoles2'];
         }
         return $roles;
     }

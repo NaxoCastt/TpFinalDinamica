@@ -306,20 +306,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //Seccion para sin stock
 
-  let $botonVerSinStock = document.getElementById("verSinStock");
   function VerTablaSinStock() {
     let $tabla = document.getElementById("tablaProductos");
     fetch("../../ajax/menuModificacionAjax.php?accion=listardeshabilitados")
-      .then((response) => response.json())
-      .then(($productos) => {
-        if ($productos.length === 0) {
-          $tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay productos para mostrar</td></tr>`;
-          return;
-        }
-        $tabla.innerHTML = dibujarTabla($productos);
-      });
+    .then((response) => response.json())
+    .then(($productos) => {
+      if ($productos.length === 0) {
+        $tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay productos para mostrar</td></tr>`;
+        return;
+      }
+      $tabla.innerHTML = dibujarTabla($productos);
+    });
   }
-
+  
+  let $botonVerSinStock = document.getElementById("verSinStock");
   let $estado = "activo";
   $botonVerSinStock.addEventListener("click", () => {
     console.log($estado);
