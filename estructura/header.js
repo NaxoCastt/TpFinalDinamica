@@ -69,7 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // --- FUNCIONES AUXILIARES ---
 
 function cargarMenusDinamicos(rol) {
-  
+
+    if (rol !== 3){
+
+
     let $ul = document.getElementById("ulMenu");
     let $paraAgregar = "";
 
@@ -117,5 +120,7 @@ function cargarMenusDinamicos(rol) {
             $ul.insertAdjacentHTML("beforeend", $paraAgregar);
           });
       });
+    }
+
   
 }

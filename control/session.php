@@ -69,6 +69,14 @@ class Session
         return $this->mensajeError;
     }
 
+    public function asignarSerVisitante(){
+
+        if(!isset($_SESSION['idRoles'])){
+
+            $_SESSION['idRoles'] = 3;
+            $_SESSION['usnombre'] = "Visitante";
+        }
+    }
     public function validar()
     {
         $esValida = false;

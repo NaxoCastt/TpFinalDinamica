@@ -91,9 +91,20 @@
 
           <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 overflow-hidden">
             <li>
-              <a class="dropdown-item py-2 px-3 text-danger" href="/tpfinaldinamica/vista/accion/cerrarSesion.php">
+              <?php 
+              
+                if($_SESSION['usnombre'] == "Visitante"){
+
+                  echo '<a class="dropdown-item py-2 px-3 text-info" href="/tpfinaldinamica/vista/accion/cerrarSesion.php">
+                <i class="bi bi-person-bounding-box me-2"></i> Iniciar sesion </a>' ;
+                }else{
+
+                  echo '<a class="dropdown-item py-2 px-3 text-danger" href="/tpfinaldinamica/vista/accion/cerrarSesion.php">
                 <i class="bi bi-box-arrow-right me-2"></i> Salir
-              </a>
+              </a>';
+                }
+              ?>
+              
             </li>
           </ul>
         </div>
