@@ -7,8 +7,13 @@ class AbmCompraEstado {
         
         $obj->setIdcompra($param['idcompra']);
         $obj->setIdcompraestadotipo($param['idcompraestadotipo']);
-        $obj->setCefechaini(date("Y-m-d H:i:s"));
-        $obj->setCefechafin(null);
+        
+        
+        $fechaIni = isset($param['cefechaini']) ? $param['cefechaini'] : date("Y-m-d H:i:s");
+        $fechaFin = isset($param['cefechafin']) ? $param['cefechafin'] : null;
+
+        $obj->setCefechaini($fechaIni);
+        $obj->setCefechafin($fechaFin);
         
         if($obj->insertar()){
             $resp = true;
@@ -16,10 +21,6 @@ class AbmCompraEstado {
         return $resp;
     }
 
-    /**
-     * Modifica el estado existente.
-     * Espera un array con: idcompraestado, idcompra, idcompraestadotipo, cefechaini, cefechafin
-     */
     public function modificacion($param){
         $resp = false;
         if (isset($param['idcompraestado'])){

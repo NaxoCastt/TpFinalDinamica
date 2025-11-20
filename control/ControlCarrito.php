@@ -198,30 +198,25 @@ class ControlCarrito
             return ['exito' => false, 'msg' => 'El carrito está vacío.'];
         }
 
-        //Validar Stock de todos los items antes de proceder
+        // Validar Stock
         foreach ($items as $item) {
             $prodList = $abmProd->buscarProducto($item->getIdproducto());
             if (count($prodList) > 0) {
                 $producto = $prodList[0];
                 if ($producto->getProcantstock() < $item->getCicantidad()) {
-                    return [
-                        'exito' => false, 
-                        'msg' => "Stock insuficiente para el producto: " . $producto->getPronombre()
-                    ];
+                    return ['exito' => false, 'msg' => "Stock insuficiente: " . $producto->getPronombre()];
                 }
             } else {
                 return ['exito' => false, 'msg' => "Un producto ya no existe."];
             }
         }
 
-        // Descontar Stock y Cambiar Estado
+        // Descontar Stock
         foreach ($items as $item) {
             $prodList = $abmProd->buscarProducto($item->getIdproducto());
             $producto = $prodList[0];
-            
             $nuevoStock = $producto->getProcantstock() - $item->getCicantidad();
             
-            // Usamos el método modificacionProducto del ABM, pasando los datos necesarios
             $datosProd = [
                 'idproducto' => $producto->getIdproducto(),
                 'pronombre' => $producto->getPronombre(),
@@ -231,37 +226,32 @@ class ControlCarrito
             $abmProd->modificacionProducto($datosProd);
         }
 
-        // Crear el primer estado (idcompraestadotipo = 1 -> Iniciada)
+        // LÓGICA DE FECHAS PARA ESTADO INICIAL (1: Iniciada)
+        $ahora = date("Y-m-d H:i:s");
         $paramEstado = [
             'idcompra' => $objCompra->getIdcompra(),
-            'idcompraestadotipo' => 1 // Iniciada
+            'idcompraestadotipo' => 1,
+            'cefechaini' => $ahora, // Inicio
+            'cefechafin' => $ahora  // Fin igual al inicio
         ];
         
        if ($abmEstado->alta($paramEstado)) {
-            
-            // INICIO ENVÍO DE CORREO (ESTADO INICIADO)
+            // ENVÍO DE CORREO
             try {
                 $abmUsuario = new AbmUsuario();
                 $listaUs = $abmUsuario->buscar(['idusuario' => $idUsuario]);
                 if (count($listaUs) > 0) {
                     $usuario = $listaUs[0];
-                    
                     $asunto = "¡Gracias por tu compra!";
-                    $cuerpoHTML = "<h1>Hola " . $usuario->getUsnombre() . "</h1>" .
-                                  "<p>Hemos recibido tu pedido (ID: " . $objCompra->getIdcompra() . ").</p>" .
-                                  "<p>Te notificaremos cuando sea aceptado.</p>";
-                                  
+                    $cuerpoHTML = "<h1>Hola " . $usuario->getUsnombre() . "</h1><p>Pedido ID: " . $objCompra->getIdcompra() . " recibido.</p>";
                     ControlCorreo::enviarCorreo($usuario->getUsmail(), $usuario->getUsnombre(), $asunto, $cuerpoHTML);
                 }
-            } catch (Exception $e) {
-                // No detenemos la compra si el mail falla, pero lo registramos
-                error_log("Falló el envío de correo de Compra Iniciada: " . $e->getMessage());
-            }
-            // ----------- FIN ENVÍO DE CORREO -----------
+            } catch (Exception $e) { error_log("Falló mail: " . $e->getMessage()); }
 
             return ['exito' => true, 'msg' => 'Compra finalizada con éxito.'];
         } else {
-            return ['exito' => false, 'msg' => 'Error al registrar el estado de la compra.'];
+            return ['exito' => false, 'msg' => 'Error al registrar el estado.'];
         }
     }
 }
+

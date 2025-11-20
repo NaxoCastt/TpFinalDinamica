@@ -34,7 +34,7 @@ if (!$objSession->validar() || !in_array('Admin', $objSession->getRol())) {
                         <thead class="table-light">
                             <tr>
                                 <th>#ID</th>
-                                <th>ID Usuario</th>
+                                <th>Nombre Usuario</th>
                                 <th>Items</th>
                                 <th>Fecha Inicio</th>
                                 <th>Fecha Fin</th>
@@ -45,6 +45,33 @@ if (!$objSession->validar() || !in_array('Admin', $objSession->getRol())) {
                         <tbody id="tablaComprasBody">
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalHistorial" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title"><i class="bi bi-clock-history"></i> Historial de Estados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTablaHistorial">
+                            </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
