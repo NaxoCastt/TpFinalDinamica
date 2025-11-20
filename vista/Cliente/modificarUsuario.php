@@ -50,7 +50,7 @@ if (!$objSession->validar()) {
 
                     <div class="mb-3">
                         <label class="form-label" for="uspass">Nueva contraseña</label>
-                        <input type="password" name="uspass" id="uspass" class="form-control" minlength="4" placeholder="Dejar en blanco para no cambiar" required>
+                        <input type="password" name="uspass" id="uspass" class="form-control" minlength="4" placeholder="Dejar en blanco para no cambiar">
                         <div class="invalid-feedback">
                             La contraseña debe tener al menos 4 caracteres.
                         </div>
@@ -58,7 +58,7 @@ if (!$objSession->validar()) {
                     <input type="hidden" name="idusuarioEscondido" id="idusuarioEscondido">
                     <div class="mb-3">
                         <label class="form-label" for="uspass_confirm">Confirmar Contraseña</label>
-                        <input type="password" name="uspass_confirm" id="uspass_confirm" class="form-control" required>
+                        <input type="password" name="uspass_confirm" id="uspass_confirm" class="form-control">
                         <div class="invalid-feedback" id="passConfirmError">
                             Las contraseñas no coinciden.
                         </div>

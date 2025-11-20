@@ -1,229 +1,182 @@
 document.addEventListener("DOMContentLoaded", () => {
   let $tabla = document.getElementById("tablaProductos");
 
-  fetch("../../ajax/menuRolPermisosAjax.php?accion=listar")
-    .then((response) => response.json())
-    .then(($productos) => {
-      if ($productos.length === 0) {
-        $tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay productos para mostrar</td></tr>`;
-        return;
-      }
-      $tabla.innerHTML = dibujarTabla($productos);
-    });
+  // 1. Cargar Listados para la tabla
+  cargarTabla();
+  
+  // 2. Cargar los Selects (Roles y Menús) para los modales
+  cargarSelects();
+
+  function cargarTabla() {
+    fetch("../../ajax/menuRolPermisosAjax.php?accion=listar")
+      .then((response) => response.json())
+      .then(($productos) => {
+        if ($productos.length === 0) {
+          $tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay permisos asignados</td></tr>`;
+          return;
+        }
+        $tabla.innerHTML = dibujarTabla($productos);
+      });
+  }
 
   function dibujarTabla($datos) {
     let $dibujado = "";
     $datos.forEach((element) => {
       $dibujado += `
         <tr>
-        <td style="vertical-align: middle">${element.idrol}</td>
-        <td style="vertical-align: middle">${element.idmenu}</td>
-        <td style="vertical-align: middle">
-  <div class="d-flex justify-content-center gap-3">
-    <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-idrol="${element.idrol}" data-idmenu="${element.idmenu}">
-      <i class="bi bi-pen"></i>
-    </button> 
-    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-idrol="${element.idrol}" data-idmenu="${element.idmenu}" 
- title="Borrar">
-      <i class="bi bi-trash"></i>
-    </button>
-  </div>
-</td>
-
-        </tr>
-        `;
+            <td style="vertical-align: middle">${element.rodescripcion}</td> 
+            <td style="vertical-align: middle">${element.menombre}</td>
+            <td style="vertical-align: middle">
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-idrol="${element.idrol}" data-idmenu="${element.idmenu}">
+                    <i class="bi bi-pen"></i>
+                    </button> 
+                    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-idrol="${element.idrol}" data-idmenu="${element.idmenu}" title="Borrar">
+                    <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>`;
     });
-
     return $dibujado;
   }
 
-  //seccion de la parte crear
+  function cargarSelects() {
+    // Cargar Roles
+    fetch("../../ajax/rolesAjax.php?accion=listar")
+      .then(r => r.json())
+      .then(roles => {
+        let opciones = '<option value="" selected disabled>Seleccione un rol...</option>';
+        roles.forEach(rol => {
+          opciones += `<option value="${rol.idrol}">${rol.rodescripcion}</option>`;
+        });
+        document.getElementById("idRol").innerHTML = opciones;
+        document.getElementById("idRolEdicion").innerHTML = opciones;
+      });
 
-  const $modal = bootstrap.Modal.getOrCreateInstance(
-    document.getElementById("Modal")
-  );
-  const $crear = document.getElementById("agregarProductoBtn");
+    // Cargar Menús
+    fetch("../../ajax/menuModificacionAjax.php?accion=listar")
+      .then(r => r.json())
+      .then(menus => {
+        let opciones = '<option value="" selected disabled>Seleccione un menú...</option>';
+        menus.forEach(menu => {
+          opciones += `<option value="${menu.idmenu}">${menu.menombre}</option>`;
+        });
+        document.getElementById("idMenu").innerHTML = opciones;
+        document.getElementById("idMenuEdicion").innerHTML = opciones;
+      });
+  }
 
+  // --- SECCION AGREGAR (ALTA) ---
+  const $modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("Modal"));
   const $botonCrear = document.getElementById("agregar");
-  const $idMenu = document.getElementById("idMenu");
-  const $idRol = document.getElementById("idRol");
   const $form = document.getElementById("form");
 
+  // >>>>>>>>>> ESTO ES LO QUE FALTABA <<<<<<<<<<
+  const $btnAbrirModal = document.getElementById("agregarProductoBtn");
+  $btnAbrirModal.addEventListener("click", () => {
+      $form.reset(); // Limpiamos el formulario
+      $form.classList.remove("was-validated"); // Quitamos estilos de validación viejos
+      $modal.show(); // Mostramos el modal
+  });
+
   $botonCrear.addEventListener("click", () => {
-    // Activar validación visual
     if (!$form.checkValidity()) {
       $form.classList.add("was-validated");
       return;
     }
     const formData = new FormData($form);
     formData.append("accion", "alta");
-    formData.append("idmenu", $idMenu.value);
-    formData.append("idrol", $idRol.value);
+
     fetch("../../ajax/menuRolPermisosAjax.php", {
       method: "POST",
       body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        if (data) {
-          Swal.fire(
-            "¡Rol creado!",
-            "Se agregó correctamente al catálogo",
-            "success"
-          );
+        if (data.success) {
+          Swal.fire("¡Permiso creado!", "Se asignó correctamente", "success");
           $modal.hide();
-          document.activeElement?.blur();
-
           $form.reset();
           $form.classList.remove("was-validated");
-          actualizarTabla();
+          cargarTabla();
         } else {
-          Swal.fire(
-            "Error",
-            data.message || "No se pudo crear el producto",
-            "error"
-          );
+          Swal.fire("Error", data.msg || "No se pudo crear", "error");
         }
       })
-      .catch((error) => {
-        console.error("Error AJAX:", error);
-        Swal.fire("Error", "Hubo un problema de conexión", "error");
-      });
+      .catch(() => Swal.fire("Error", "Hubo un problema de conexión", "error"));
   });
 
-  $crear.addEventListener("click", (e) => {
-    e.currentTarget?.blur();
-
-    $idMenu.value = "";
-    $idRol.value = "";
-    $modal.show();
-  });
-
-  //Seccion parte borrar registro
-  let $botonBorrar = null;
-  let $stockBorrar = null;
-
-  const $modalCerrar = bootstrap.Modal.getOrCreateInstance(
-    document.getElementById("modalBorrar")
-  );
+  // --- SECCION BORRAR ---
+  let $idRolBorrar = null;
+  let $idMenuBorrar = null;
+  const $modalBorrar = bootstrap.Modal.getOrCreateInstance(document.getElementById("modalBorrar"));
+  
   document.addEventListener("click", (e) => {
-    $botonBorrar = e.target.closest(".btnBorrar");
-
-    if (!$botonBorrar) {
-      return;
-    }
-    $idBorrar = $botonBorrar.dataset.idrol;
-    $idBorrar2 = $botonBorrar.dataset.idmenu;
-    console.log($idBorrar);
-    console.log($idBorrar2);
-    $modalCerrar.show();
-  });
-  const $confirmacion = document.getElementById("botonBorrarConfirmacion");
-  $confirmacion.addEventListener("click", () => {
-    $url = "../../ajax/menuRolPermisosAjax.php?accion=baja";
-
-    fetch($url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        idrol: $idBorrar,
-        idmenu: $idBorrar2,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data === true || data === "true") {
-          Swal.fire(
-            "¡Puente eliminado!",
-            "El puente se eliminó satisfactoriamente",
-            "success"
-          );
-          $modalCerrar.hide();
-          document.activeElement?.blur();
-
-          actualizarTabla();
-        } else {
-          Swal.fire(
-            "Error",
-            data.message || "No se pudo borrar el producto",
-            "error"
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("Error AJAX:", error);
-        Swal.fire("Error", "Hubo un problema de conexión", "error");
-      });
+    const btn = e.target.closest(".btnBorrar");
+    if (!btn) return;
+    $idRolBorrar = btn.dataset.idrol;
+    $idMenuBorrar = btn.dataset.idmenu;
+    $modalBorrar.show();
   });
 
-  //Seccion para editar registro
-  //Seccion para editar registro
-
-  let $idRolEdicion = null;
-  let $idMenuEdicion = null;
-  let $idRolEdicionInput = document.getElementById("idRolEdicion");
-  let $idMenuEdicionInput = document.getElementById("idMenuEdicion");
-  let $formEdicion = document.getElementById("formEdicion");
-  const $modalEditar = bootstrap.Modal.getOrCreateInstance(
-    document.getElementById("modalEditar")
-  );
-
-  // EVENT LISTENER PARA HACER CLIC EN BOTÓN EDITAR
-  document.addEventListener("click", (e) => {
-    const $botonEditar = e.target.closest(".btnEditar");
-    if (!$botonEditar) return;
-
-    $idRolEdicion = $botonEditar.dataset.idrol;
-    $idMenuEdicion = $botonEditar.dataset.idmenu;
-
+  document.getElementById("botonBorrarConfirmacion").addEventListener("click", () => {
     const formData = new FormData();
-    formData.append("idrol", $idRolEdicion);
-    formData.append("idmenu", $idMenuEdicion);
-    formData.append("accion", "buscar");
+    formData.append("accion", "baja");
+    formData.append("idrol", $idRolBorrar);
+    formData.append("idmenu", $idMenuBorrar);
 
-    fetch("../../ajax/menuRolPermisosAjax.php?accion=buscar", {
+    fetch("../../ajax/menuRolPermisosAjax.php", {
       method: "POST",
-      body: formData,
+      body: formData 
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.idrol !== undefined) {
-          $idRolEdicionInput.value = data.idrol;
-          $idMenuEdicionInput.value = data.idmenu;
-          $modalEditar.show();
+      .then(r => r.json())
+      .then(data => {
+        if (data === true || data.exito === true) {
+          Swal.fire("¡Eliminado!", "El permiso se eliminó correctamente", "success");
+          $modalBorrar.hide();
+          cargarTabla();
         } else {
-          Swal.fire("Error", "No se encontró el registro", "error");
+          Swal.fire("Error", data.msg || "No se pudo borrar el permiso", "error");
         }
       })
       .catch((error) => {
-        console.error("Error AJAX:", error);
-        Swal.fire("Error", "Hubo un problema de conexión", "error");
+        console.error(error);
+        Swal.fire("Error", "Hubo un error de conexión", "error");
       });
   });
 
-  // EVENT LISTENER PARA CONFIRMAR EDICIÓN (FUERA, NO DENTRO)
-  const $botonConfirmacionEditar = document.getElementById(
-    "btnEditarConfirmacion"
-  );
+  // --- SECCION EDITAR ---
+  let $idRolOriginal = null;
+  let $idMenuOriginal = null;
+  const $modalEditar = bootstrap.Modal.getOrCreateInstance(document.getElementById("modalEditar"));
+  const $formEdicion = document.getElementById("formEdicion");
 
-  $botonConfirmacionEditar.addEventListener("click", () => {
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".btnEditar");
+    if (!btn) return;
+
+    $idRolOriginal = btn.dataset.idrol;
+    $idMenuOriginal = btn.dataset.idmenu;
+
+    // Pre-seleccionamos los valores
+    document.getElementById("idRolEdicion").value = $idRolOriginal;
+    document.getElementById("idMenuEdicion").value = $idMenuOriginal;
+
+    $modalEditar.show();
+  });
+
+  document.getElementById("btnEditarConfirmacion").addEventListener("click", () => {
     if (!$formEdicion.checkValidity()) {
-      $formEdicion.classList.add("was-validated");
-      return;
+        $formEdicion.classList.add("was-validated");
+        return;
     }
 
     const formData = new FormData();
-    formData.append(
-      "idrolNuevo",
-      document.getElementById("idRolEdicion").value
-    );
-    formData.append(
-      "idmenuNuevo",
-      document.getElementById("idMenuEdicion").value
-    );
-    formData.append("idrolOriginal", $idRolEdicion);
-    formData.append("idmenuOriginal", $idMenuEdicion);
+    formData.append("idrolNuevo", document.getElementById("idRolEdicion").value);
+    formData.append("idmenuNuevo", document.getElementById("idMenuEdicion").value);
+    formData.append("idrolOriginal", $idRolOriginal);
+    formData.append("idmenuOriginal", $idMenuOriginal);
     formData.append("accion", "editar");
 
     fetch("../../ajax/menuRolPermisosAjax.php", {
@@ -233,43 +186,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         if (data) {
-          Swal.fire(
-            "¡Puente Editado!",
-            "Se modificó correctamente el puente",
-            "success"
-          );
+          Swal.fire("¡Editado!", "Se modificó correctamente", "success");
           $modalEditar.hide();
-          document.activeElement?.blur();
           $formEdicion.classList.remove("was-validated");
-          actualizarTabla();
+          cargarTabla();
         } else {
-          Swal.fire(
-            "Error",
-            data.message || "No se pudo editar el puente",
-            "error"
-          );
+          Swal.fire("Error", "No se pudo editar (¿Ya existe esa combinación?)", "error");
         }
       })
-      .catch((error) => {
-        console.error("Error AJAX:", error);
-        Swal.fire("Error", "Hubo un problema de conexión al editar", "error");
-      });
+      .catch(() => Swal.fire("Error", "Error de conexión", "error"));
   });
-
-  function actualizarTabla($valor) {
-    fetch("../../ajax/menuRolPermisosAjax.php?accion=listar")
-      .then((response) => response.json())
-      .then(($productos) => {
-        if ($productos.length === 0) {
-          $tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay productos para mostrar</td></tr>`;
-          return;
-        }
-
-        $tabla.innerHTML = dibujarTabla($productos);
-      })
-      .catch((error) => {
-        console.error("Error al cargar productos:", error);
-        $tabla.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Error al cargar productos</td></tr>`;
-      });
-  }
 });
