@@ -22,7 +22,7 @@ if (!in_array('Admin', $objSession->getRol())) {
 
 <head>
   <meta charset="UTF-8">
-  <title>Catálogo de Juguetes</title>
+  <title>Administracion de Juguetes</title>
   <link rel="icon" type="image/png" href="/tpfinaldinamica/util/logo.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -55,7 +55,7 @@ if (!in_array('Admin', $objSession->getRol())) {
       <!-- Modal para agregar producots -->
       <div class="d-flex">
         <button type="button" id="agregarProductoBtn" class="btn btn-light d-flex justify-content-center m-auto" data-bs-whatever="@mdo"><i class="bi bi-plus"> Agregar producto</i></button>
-        <button type="button" id="verSinStock" class="btn btn-light d-flex justify-content-center m-auto" data-bs-whatever="@mdo"><i class="bi bi-plus"> Ver productos sin stock...En construccion</i></button>
+        <button type="button" id="verSinStock" class="btn btn-light d-flex justify-content-center m-auto" data-bs-whatever="@mdo"><i class="bi bi-plus"> Ver productos sin stock</i></button>
       </div>
       <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
