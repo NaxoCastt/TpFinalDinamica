@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
     // Cargar Menús
-    fetch("../../ajax/menuModificacionAjax.php?accion=listar")
+    fetch("../../ajax/menuModificacionAjax.php?accion=listarPrincipales")
       .then(r => r.json())
       .then(menus => {
         let opciones = '<option value="" selected disabled>Seleccione un menú...</option>';

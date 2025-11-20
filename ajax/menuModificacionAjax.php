@@ -36,6 +36,29 @@ switch ($accion) {
 
         $respuesta = $salida;
         break;
+    case 'listarPrincipales':
+        $salida = [];
+        $datos = data_submitted();
+        $objPadre = new ABMMenu();
+        $respuesta = $obj->listar("medeshabilitado IS NULL AND idpadre IS NULL");
+        foreach ($respuesta as $item) {
+            $idPadre = $item->getIdpadre();
+            if ($idPadre == NULL) {
+                $idPadre = "Es principal";
+            } else if ($idPadre != NULL) {
+                $idPadre = $objPadre->buscar($idPadre)->getMenombre();
+            }
+            $salida[] = [
+                'idmenu'   => $item->getIdMenu(),
+                'menombre'    => $item->getMenombre(),
+                'medescripcion'    => $item->getMedescripcion(),
+                'idpadre'   => $idPadre,
+                'medeshabilitado' => $item->getMedeshabilitado()
+            ];
+        }
+
+        $respuesta = $salida;
+        break;
 
     case 'listardeshabilitados':
         $salida = [];
