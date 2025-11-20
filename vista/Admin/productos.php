@@ -1,6 +1,8 @@
 <?php
 include_once "../../configuracion.php";
 $objSession = new Session();
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 
 // Si no está logueado, al login
 if (!$objSession->validar()) {

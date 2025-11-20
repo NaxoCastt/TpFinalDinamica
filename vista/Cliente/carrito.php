@@ -1,5 +1,6 @@
 <?php
 include_once "../../configuracion.php";
+require_once __DIR__ . '/../../vendor/autoload.php';
 $objSession = new Session();
 if (!$objSession->validar()) {
     header('Location: ../login.php?error=Debe iniciar sesion');

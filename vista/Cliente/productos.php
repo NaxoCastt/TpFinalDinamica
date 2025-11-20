@@ -1,6 +1,7 @@
 <?php
 include_once "../../configuracion.php";
 include_once "../../control/Session.php";
+require_once __DIR__ . '/../../vendor/autoload.php';
 $objSession = new Session();
 
 // Si no está logueado, no ve nada
