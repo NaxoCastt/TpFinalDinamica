@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   let $tabla = document.getElementById("tablaProductos");
 
-  fetch("../../ajax/productoAjax.php?accion=listar")
+  fetch("../../ajax/rolesAjax.php?accion=listar")
     .then((response) => response.json())
     .then(($productos) => {
       if ($productos.length === 0) {
@@ -16,24 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
     $datos.forEach((element) => {
       $dibujado += `
         <tr>
-        <td style="vertical-align: middle">${element.idproducto}</td>
-        <td style="vertical-align: middle">
-      <img src="/tpfinaldinamica/util/imagenesProductos/${element.idproducto}.${element.extension}?v=${new Date().getTime()}"
-
-           alt="Imagen del producto"
-           style="max-width: 80px; max-height: 80px; object-fit: cover;"
-           onerror="this.src='/tpfinaldinamica/util/imagenesProductos/default.png';">
-    </td>
-
-        <td style="vertical-align: middle">${element.pronombre}</td>
-        <td style="vertical-align: middle">${element.prodetalle}</td>
-        <td style="vertical-align: middle">${element.procantstock}</td>
+        <td style="vertical-align: middle">${element.idrol}</td>
+        <td style="vertical-align: middle">${element.rodescripcion}</td>
         <td style="vertical-align: middle">
   <div class="d-flex justify-content-center gap-3">
-    <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-id="${element.idproducto}">
+    <button class="btn btn-warning btn-sm px-3 py-2 btnEditar" title="Editar" data-idrol="${element.idrol}">
       <i class="bi bi-pen"></i>
     </button> 
-    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-id="${element.idproducto}" data-stock="${element.procantstock}"
+    <button class="btn btn-danger btn-sm px-3 py-2 btnBorrar" data-idrol="${element.idrol}" 
  title="Borrar">
       <i class="bi bi-trash"></i>
     </button>
@@ -55,9 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const $crear = document.getElementById("agregarProductoBtn");
 
   const $botonCrear = document.getElementById("agregar");
-  const $nombre = document.getElementById("nombre");
-  const $detalle = document.getElementById("detalle");
-  const $stock = document.getElementById("stock");
+  const $nombre = document.getElementById("rodescripcion");
   const $form = document.getElementById("form");
 
   $botonCrear.addEventListener("click", () => {
@@ -67,17 +55,18 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     const formData = new FormData($form);
-    formData.append("id", $idEdicion);
     formData.append("accion", "alta");
-    fetch("../../ajax/productoAjax.php?", {
+    formData.append("rodescripcion", $nombre.value);
+    fetch("../../ajax/rolesAjax.php", {
       method: "POST",
       body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         if (data) {
           Swal.fire(
-            "¡Producto creado!",
+            "¡Rol creado!",
             "Se agregó correctamente al catálogo",
             "success"
           );
@@ -105,8 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
     e.currentTarget?.blur();
 
     $nombre.value = "";
-    $detalle.value = "";
-    $stock.value = "";
     $modal.show();
   });
 
@@ -119,12 +106,11 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   document.addEventListener("click", (e) => {
     $botonBorrar = e.target.closest(".btnBorrar");
-    
+
     if (!$botonBorrar) {
       return;
     }
-    $stockBorrar = $botonBorrar.dataset.stock;
-    $idBorrar = $botonBorrar.dataset.id;
+    $idBorrar = $botonBorrar.dataset.idrol;
 
     $modalCerrar.show();
   });
@@ -132,34 +118,27 @@ document.addEventListener("DOMContentLoaded", () => {
   $confirmacion.addEventListener("click", () => {
     console.log($idBorrar);
 
-    if ($stockBorrar > 0) {
-      $url = "../../ajax/productoAjax.php?accion=baja";
-    } else {
-      $url = "../../ajax/productoAjax.php?accion=bajaDefinitiva";
-    }
+    $url = "../../ajax/rolesAjax.php?accion=baja";
 
     fetch($url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id: $idBorrar,
+        idrol: $idBorrar,
       }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data === true || data === "true") {
           Swal.fire(
-            "¡Producto eliminado!",
-            "El producto se eliminó satisfactoriamente",
+            "¡Rol eliminado!",
+            "El rol se eliminó satisfactoriamente",
             "success"
           );
           $modalCerrar.hide();
           document.activeElement?.blur();
-          if ($stockBorrar > 0) {
-            actualizarTabla();
-          } else {
-            VerTablaSinStock();
-          }
+
+          actualizarTabla();
         } else {
           Swal.fire(
             "Error",
@@ -186,25 +165,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const $botonEditar = e.target.closest(".btnEditar");
     if (!$botonEditar) return;
 
-    $idEdicion = $botonEditar.dataset.id;
+    $idEdicion = $botonEditar.dataset.idrol;
     const formData = new FormData($formEdicion);
-    formData.append("id", $idEdicion);
+    formData.append("idrol", $idEdicion);
     formData.append("accion", "buscar");
-    fetch("../../ajax/productoAjax.php", {
+    fetch("../../ajax/rolesAjax.php?=buscar", {
       method: "POST",
       body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          let $nombreEdicion = document.getElementById("nombreEdicion");
-          let $detalleEdicion = document.getElementById("detalleEdicion");
-          let $stockEdicion = document.getElementById("stockEdicion");
-          document.getElementById("imagenEdicion").value = "";
+          if (Array.isArray(data) && data.length > 0) {
+              let $nombreEdicion = document.getElementById("rodescripcionEdicion");
+              console.log(data[0].rodescripcion)
 
-          $nombreEdicion.value = data[0].pronombre;
-          $detalleEdicion.value = data[0].prodetalle;
-          $stockEdicion.value = data[0].procantstock;
+          $nombreEdicion.value = data[0].rodescripcion;
         }
         $modalEditar.show();
 
@@ -219,24 +194,14 @@ document.addEventListener("DOMContentLoaded", () => {
             $formEdicion.classList.add("was-validated");
             return;
           }
-          document.getElementById("idEdicion").value = $idEdicion;
-          $nombreEdicion = document.getElementById("nombreEdicion");
-          $detalleEdicion = document.getElementById("detalleEdicion");
-          $stockEdicion = document.getElementById("stockEdicion");
+          $nombreEdicion = document.getElementById("rodescripcionEdicion");
 
           const formData = new FormData($formEdicion);
-          formData.append("id", $idEdicion);
+          formData.append("idrol", $idEdicion);
           formData.append("accion", "editar");
-          formData.append("pronombre", $nombreEdicion.value);
-          formData.append("prodetalle", $detalleEdicion.value.trim() || "");
-          const $imagenEdicion = document.getElementById("imagenEdicion");
-          if ($imagenEdicion.files.length > 0) {
-            formData.append("imagen", $imagenEdicion.files[0]);
-          }
+          formData.append("rodescripcion", $nombreEdicion.value);
 
-          formData.append("procantstock", $stockEdicion.value);
-
-          fetch("../../ajax/productoAjax.php", {
+          fetch("../../ajax/rolesAjax.php", {
             method: "POST",
             body: formData,
           })
@@ -250,13 +215,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
                 $modalEditar.hide();
                 document.activeElement?.blur();
-                if($stockEdicion.value > 0){
-
                   actualizarTabla();
-                }
-                else{
-                  VerTablaSinStock()
-                }
+               
               } else {
                 Swal.fire(
                   "Error",
@@ -282,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function actualizarTabla($valor) {
-    fetch("../../ajax/productoAjax.php?accion=listar")
+    fetch("../../ajax/rolesAjax.php?accion=listar")
       .then((response) => response.json())
       .then(($productos) => {
         if ($productos.length === 0) {
@@ -299,36 +259,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   //Seccion para sin stock
-
-  let $botonVerSinStock = document.getElementById("verSinStock");
-  function VerTablaSinStock() {
-    let $tabla = document.getElementById("tablaProductos");
-    console.log("boton pulsado");
-    fetch("../../ajax/productoAjax.php?accion=listarSinStock")
-      .then((response) => response.json())
-      .then(($productos) => {
-        if ($productos.length === 0) {
-          $tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay productos para mostrar</td></tr>`;
-          return;
-        }
-        $tabla.innerHTML = dibujarTabla($productos);
-      });
-  }
-  let $estado = "activo";
-  $botonVerSinStock.addEventListener("click", () => {
-    console.log($estado);
-    if ($estado !== "activo") {
-      $botonVerSinStock.innerHTML =
-        '<i class="bi bi-plus"> Ver productos sin stock</i>';
-      actualizarTabla();
-      $estado = "activo";
-    } else {
-      $botonVerSinStock.innerHTML =
-        '<i class="bi bi-plus"> Ver productos con stock</i>';
-      $estado = "desactivado";
-      VerTablaSinStock();
-    }
-  
-
-
-})})
+});

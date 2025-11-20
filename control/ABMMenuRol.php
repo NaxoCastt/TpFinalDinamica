@@ -12,10 +12,10 @@
             return $resp;
         }
 
-        public function baja($idmenurole){
+        public function baja($idmenu, $idrol){
             $resp = false;
             $obj = new MenuRol();
-            if($obj->buscar($idmenurole)){
+            if($obj->buscar($idrol, $idmenu)){
                 if($obj->eliminar()){
                     $resp = true;
                 }
@@ -26,8 +26,11 @@
         public function modificacion($param){
             $resp = false;
             $obj = new MenuRol();
-            if($obj->buscar($param['idmenurole'])){
-                $obj->cargar($param['idmenu'], $param['idrol']);
+
+            if($obj->buscar($param['idrolOriginal'], $param['idmenuOriginal'])){
+                $obj->setOriginal($param['idmenuOriginal'], $param['idrolOriginal']);
+                $obj->cargar($param['idmenuNuevo'], $param['idrolNuevo']);
+
                 if($obj->modificar()){
                     $resp = true;
                 }
@@ -35,10 +38,10 @@
             return $resp;
         }
 
-        public function buscar($idrol){
+        public function buscar($idrol, $idmenu){
             $respObj = null;
             $obj = new MenuRol();
-            if($obj->buscar($idrol)){
+            if($obj->buscar($idrol, $idmenu)){
                 $respObj = $obj;
             }
             return $respObj;

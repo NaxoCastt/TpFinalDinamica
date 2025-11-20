@@ -30,6 +30,8 @@ class AbmRol
         return $obj;
     }
 
+    
+
     /**
      * Verifica que esté seteada la clave primaria
      */
@@ -44,9 +46,18 @@ class AbmRol
 
     // --- CRUD ---
 
+
+    public function listar($x){
+
+        $objProducto = new Rol();
+        $colProductos = $objProducto->listar($x);
+        return $colProductos;
+    }
     /**
      * Inserta un rol en la BD
      */
+
+
     public function alta($param)
     {
         $resp = false;
