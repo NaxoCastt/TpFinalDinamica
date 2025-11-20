@@ -38,13 +38,13 @@
           </a>
         </li>
         <li class="nav-item ">
-          <a href="#" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
+          <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
             <i class="bi bi-whatsapp fs-5 me-1"></i>Contacto
 
           </a>
         </li>
         <li class="nav-item ">
-          <a href="https://maps.app.goo.gl/GznYKFWvudzCuhqe8" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
+          <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1" class="nav-link text-white fw-semibold d-flex align-items-center gap-2">
             <i class="bi bi-geo-alt fs-5 me-1"></i>Donde encontrarnos
 
           </a>

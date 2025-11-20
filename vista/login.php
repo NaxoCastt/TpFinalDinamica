@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Juguetería</title>
+      <link rel="icon" type="image/png" href="/tpfinaldinamica/util/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light d-flex justify-content-center align-items-center vh-100">
