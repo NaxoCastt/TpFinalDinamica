@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const $verComo = document.getElementById("verComo");
   let $idRol2 = parseInt($verComo.dataset.rol2);
 
-  // 2. LOGICA "VER COMO" (Visualización del botón)
+  // LOGICA "VER COMO" (Visualización del botón)
   if ($idRol2 === 1) {
     // Si tiene rol secundario (es decir, es un admin real)
     $verComo.classList.remove("d-none");
@@ -43,25 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // CONTROL DE VISIBILIDAD (Si NO es Cliente, ocultar cosas de compra)
-  if (rol !== 2) {
-    // Ocultar Botón del Carrito
-    const btnCarrito = document.querySelector('a[href*="carrito.php"]');
-    if (btnCarrito) {
-      btnCarrito.style.display = "none";
-    }
-
-    // Ocultar opciones del Menú de Usuario
-    const opcionesCliente = ["modificarUsuario.php", "misCompras.php"];
-    opcionesCliente.forEach((pagina) => {
-      const link = document.querySelector(`a[href*="${pagina}"]`);
-      if (link) {
-        const liPadre = link.closest("li");
-        if (liPadre) liPadre.style.display = "none";
-      }
-    });
-  }
-
   // LISTENERS PARA CAMBIAR DE ROL
   document
     .getElementById("verAdmin")
@@ -83,18 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // CARGA DE MENÚS DESDE BASE DE DATOS
   cargarMenusDinamicos(rol);
-
-  // INICIALIZAR CARRITO
-  actualizarContadorCarrito(); // Llamada inicial
-
-  // Escuchar eventos globales para actualizar sin recargar
-  document.addEventListener("cartUpdated", actualizarContadorCarrito);
 });
 
 // --- FUNCIONES AUXILIARES ---
 
 function cargarMenusDinamicos(rol) {
-  if (rol === 1) { //El mejor if del mundo
+  
     let $ul = document.getElementById("ulMenu");
     let $paraAgregar = "";
 
@@ -142,30 +117,5 @@ function cargarMenusDinamicos(rol) {
             $ul.insertAdjacentHTML("beforeend", $paraAgregar);
           });
       });
-  }
-}
-
-function actualizarContadorCarrito() {
-  const cartBadge = document.getElementById("cart-count");
-  if (!cartBadge) return; // Si no existe (ej. modo admin)
-
-  fetch("/tpfinaldinamica/ajax/carritoAjax.php?accion=listar")
-    .then((response) => response.json())
-    .then((data) => {
-      let totalItems = 0;
-      if (Array.isArray(data)) {
-        data.forEach((item) => {
-          totalItems += parseInt(item.cantidad);
-        });
-      }
-
-      if (totalItems > 0) {
-        cartBadge.innerText = totalItems;
-        cartBadge.style.display = "inline-block";
-        cartBadge.classList.remove("d-none");
-      } else {
-        cartBadge.style.display = "none";
-      }
-    })
-    .catch((error) => console.error("Error carrito:", error));
+  
 }
