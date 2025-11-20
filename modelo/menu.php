@@ -54,14 +54,14 @@ class Menu
         $base = new BaseDatos();
         $resp = false;
         $idpadre = $this->getIdpadre();
-        if($idpadre == "-1" || $idpadre == ""){
+        if ($idpadre == "-1" || $idpadre == "") {
             $idpadreSQL = "NULL";
+        } else {
+            $idpadreSQL = intval(trim($idpadre));
         }
-        else{
-            $idpadreSQL =intval(trim($idpadre));
-        }
-        
-        $consulta = "INSERT INTO menu(menombre, medescripcion, idpadre) VALUES ('" . $this->getMenombre() . "','" . $this->getMedescripcion() . "'," . $idpadreSQL . ")";
+
+        $consulta = "INSERT INTO menu(menombre, medescripcion, idpadre, medeshabilitado) VALUES ('" . $this->getMenombre() . "','" . $this->getMedescripcion() . "'," . $idpadreSQL . ", NULL)";
+
         if ($base->Iniciar()) {
             if ($id = $base->Ejecutar($consulta)) {
                 $this->setIdmenu($id);
@@ -74,7 +74,6 @@ class Menu
         }
         return $resp;
     }
-
     public function modificar()
     {
         $resp = false;
